@@ -1,5 +1,6 @@
 package io.ecp.testmall.member.service;
 
+import io.ecp.testmall.member.entity.Address;
 import io.ecp.testmall.member.entity.Member;
 import io.ecp.testmall.member.entity.MemberDTO;
 import io.ecp.testmall.member.entity.Role;
@@ -31,8 +32,13 @@ public class MemberService {
                 .name(memberDTO.getName())
                 .email(memberDTO.getEmail())
                 .password(passwordEncoder.encode(memberDTO.getPassword()))
+                .phone(memberDTO.getPhone())
                 .role(Role.USER)
-                .address(memberDTO.getAddress())
+                .address(Address.builder()
+                        .city(memberDTO.getCity())
+                        .street(memberDTO.getStreet())
+                        .zipcode(memberDTO.getZipcode())
+                        .build())
                 .build();
         return memberRepository.save(member);
     }

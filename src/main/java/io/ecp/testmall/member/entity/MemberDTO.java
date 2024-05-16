@@ -16,5 +16,8 @@ public class MemberDTO {
     private String password;
     @NotEmpty
     private String name;
-    private Address address;
+    private String phone;
+    private String city;
+    private String street;
+    private String zipcode;
 }

@@ -77,11 +77,12 @@ public class SecurityConfig {
         http
                 .addFilterBefore(jwtVerifyFilter(), UsernamePasswordAuthenticationFilter.class);
         http
-                .formLogin(auth -> auth
+                /*.formLogin(auth -> auth
                         .loginPage("/login")
                         .successHandler(customLoginSuccessHandler())
                         .failureHandler(customLoginFailHandler())
-                );
+                );*/
+                        .formLogin(AbstractHttpConfigurer::disable);
         http
                 .oauth2Login(auth -> auth
                         .loginPage("/oauth2/login")
