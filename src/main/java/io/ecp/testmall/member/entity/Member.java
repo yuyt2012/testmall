@@ -28,7 +28,7 @@ public class Member {
     private String email;
     private String password;
     private String name;
-    private String SocialId;
+    private String socialId;
     @Enumerated(EnumType.STRING)
     private Role role;
     @Embedded

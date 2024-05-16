@@ -7,7 +7,7 @@ public class CustomExpireException extends ExpiredJwtException {
     private final String message;
 
     public CustomExpireException(String message, ExpiredJwtException source) {
-        super(source.getHeader(), source.getClaims(), source.getMessage();
+        super(source.getHeader(), source.getClaims(), source.getMessage());
         this.message = message;
     }
 

@@ -9,6 +9,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @Transactional(readOnly = true)
 public class MemberService {
@@ -16,11 +18,11 @@ public class MemberService {
     @Autowired
     private MemberRepository memberRepository;
 
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public Member findByEmail(String email) {
-        return memberRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("해당 이메일을 가진 사용자가 없습니다."));
+    public Optional<Member> findByEmail(String email) {
+        return memberRepository.findByEmail(email);
     }
 
     @Transactional(readOnly = false)

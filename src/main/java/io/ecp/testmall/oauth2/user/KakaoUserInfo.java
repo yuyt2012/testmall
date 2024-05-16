@@ -9,7 +9,7 @@ public class KakaoUserInfo {
     public static Map<String, Object> profile;
 
     public KakaoUserInfo(Map<String, Object> attributes) {
-        String id = String.valueOf(attributes.get("id"));
+        socialId = String.valueOf(attributes.get("id"));
         account = (Map<String, Object>) attributes.get("kakao_account");
         profile = (Map<String, Object>) account.get("profile");
     }
@@ -18,7 +18,7 @@ public class KakaoUserInfo {
         return socialId;
     }
 
-    public String getName() {
-        return String.valueOf(profile.get("nickname"));
+    public String getEmail() {
+        return String.valueOf(account.get("email"));
     }
 }
