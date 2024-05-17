@@ -21,7 +21,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 public class JwtVerifyFilter extends OncePerRequestFilter {
 
-    private Logger log = LoggerFactory.getLogger(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     private static final String[] whitelist = {"/signUp", "/login", "/refresh", "/", "/index.html"};
 
