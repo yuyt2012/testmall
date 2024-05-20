@@ -13,6 +13,10 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -20,6 +24,7 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 @Service
 @Transactional(readOnly = true)
@@ -47,15 +52,9 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
 
         KakaoUserInfo kakaoUserInfo = new KakaoUserInfo(attributes);
         String socialId = kakaoUserInfo.getSocialId();
-        String email = kakaoUserInfo.getEmail();
 
-        Optional<Member> bySocialId = memberRepository.findBySocialId(socialId);
-        Member member = bySocialId.orElse(null);
-        if (member != null) {
-            log.info("이미 가입된 회원입니다");
-        } else {
-            member = saveKakaoUser(socialId, email);
-        }
+        Member member = memberRepository.findBySocialId(socialId).orElseThrow(
+                () -> new IllegalArgumentException("가입되지 않은 회원입니다."));
 
         return new PrincipalDetail(member, Collections.singleton(new SimpleGrantedAuthority(member.getRole().getName())), attributes);
     }

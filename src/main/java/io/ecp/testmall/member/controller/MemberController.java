@@ -28,19 +28,19 @@ public class MemberController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @PostMapping("/signUp")
-    public Map<String, String> signUp(@RequestBody MemberDTO memberDTO) {
+    @PostMapping("/signup")
+    public ResponseEntity<?> signup(@RequestBody MemberDTO memberDTO) {
         log.info("memberDTO = {}", memberDTO);
-        Map<String, String> response = new HashMap<>();
         Member byEmail = memberService.findByEmail(memberDTO.getEmail())
                 .orElse(null);
-        if (byEmail == null) {
-            response.put("error", "이미 존재하는 이메일입니다");
+        if (byEmail != null) {
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(Map.of("success", false, "error", "이미 가입된 이메일입니다."));
         } else {
             memberService.saveMember(memberDTO);
-            response.put("success", "성공적으로 처리하였습니다");
+            return ResponseEntity.ok().body(Map.of("success", true));
         }
-        return response;
     }
 
     @GetMapping("/check/{email}")

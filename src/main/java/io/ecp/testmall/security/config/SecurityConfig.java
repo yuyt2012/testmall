@@ -80,7 +80,6 @@ public class SecurityConfig {
                  .formLogin(AbstractHttpConfigurer::disable);
         http
                 .oauth2Login(auth -> auth
-                        .loginPage("/oauth2/login")
                         .successHandler(customLoginSuccessHandler())
                         .userInfoEndpoint(userInfo -> userInfo.userService(oAuth2UserService)));
         return http.build();
