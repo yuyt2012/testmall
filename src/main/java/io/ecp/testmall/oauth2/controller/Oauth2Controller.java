@@ -21,9 +21,9 @@ public class Oauth2Controller {
         if (code != null) {
             try {
                 String accessToken = oAuth2UserService.getAccessToken(code);
-                OAuth2User oAuth2User = oAuth2UserService.loadUserByToken(accessToken);
+                boolean exist = oAuth2UserService.isUserExistByToken(accessToken);
                 // 사용자 정보가 데이터베이스에 없는 경우
-                if (oAuth2User == null) {
+                if (!exist) {
                     return ResponseEntity.status(HttpStatus.OK).body("회원가입 필요");
                 }
                 // 사용자 정보가 데이터베이스에 있는 경우
