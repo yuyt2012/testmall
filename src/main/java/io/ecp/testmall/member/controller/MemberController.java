@@ -43,12 +43,6 @@ public class MemberController {
         }
     }
 
-    @GetMapping("/check/{email}")
-    public boolean checkEmail(@PathVariable String email) {
-        Optional<Member> byEmail = memberService.findByEmail(email);
-        return byEmail.isEmpty();
-    }
-
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginForm loginForm) {
         Optional<Member> optionalMember = memberService.findByEmail(loginForm.getEmail());
@@ -59,9 +53,9 @@ public class MemberController {
                 claims.put("email", member.getEmail());
                 claims.put("role", member.getRole().toString());
                 String token = JwtUtils.generateToken(claims, 60); // 60분 동안 유효한 토큰 생성
-                return ResponseEntity.ok().header("Authorization", "Bearer " + token).build();
+                return ResponseEntity.ok().body(Map.of("success", true, "token", "Bearer " + token));
             }
         }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        return ResponseEntity.ok().body(Map.of("success", false, "message", "이메일 또는 비밀번호가 잘못되었습니다."));
     }
 }

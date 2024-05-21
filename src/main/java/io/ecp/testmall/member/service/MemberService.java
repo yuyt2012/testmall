@@ -32,6 +32,7 @@ public class MemberService {
                 .name(memberDTO.getName())
                 .email(memberDTO.getEmail())
                 .password(passwordEncoder.encode(memberDTO.getPassword()))
+                .socialId(memberDTO.getSocialId())
                 .phone(memberDTO.getPhone())
                 .role(Role.USER)
                 .address(Address.builder()

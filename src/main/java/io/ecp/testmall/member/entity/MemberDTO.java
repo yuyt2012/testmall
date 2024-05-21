@@ -16,6 +16,7 @@ public class MemberDTO {
     private String password;
     @NotEmpty
     private String name;
+    private String socialId;
     private String phone;
     private String city;
     private String street;
