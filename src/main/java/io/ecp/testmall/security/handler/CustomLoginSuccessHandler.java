@@ -18,7 +18,7 @@ import java.util.Map;
 
 public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final  Logger log = LoggerFactory.getLogger(getClass());
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {

@@ -1,10 +1,11 @@
 package io.ecp.testmall.oauth2.controller;
 
 import io.ecp.testmall.oauth2.service.OAuth2UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -12,12 +13,15 @@ import java.util.Map;
 @RestController
 public class Oauth2Controller {
 
+    private final Logger log = LoggerFactory.getLogger(getClass());
+
     @Autowired
     private OAuth2UserService oAuth2UserService;
 
-    @PostMapping("/oauth2/callback/kakao")
+    @PostMapping("/login/oauth2/kakao")
     public ResponseEntity<?> handleKakaoCallback(@RequestBody Map<String, String> data) {
         String code = data.get("code");
+        log.info("code: {}", code);
         if (code != null) {
             try {
                 String accessToken = oAuth2UserService.getAccessToken(code);
@@ -31,7 +35,8 @@ public class Oauth2Controller {
                     return ResponseEntity.ok().body("로그인 성공");
                 }
             } catch (Exception e) {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("인증 코드 처리 중 오류 발생");
+                log.error("Error occurred while processing the authorization code: ", e);
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("인증 코드 처리 중 오류 발생: " + e.getMessage());
             }
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("인증 코드가 없습니다");

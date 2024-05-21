@@ -39,7 +39,7 @@ public class MemberController {
                     .body(Map.of("success", false, "error", "이미 가입된 이메일입니다."));
         } else {
             memberService.saveMember(memberDTO);
-            return ResponseEntity.ok().body(Map.of("success", true));
+            return ResponseEntity.ok().body(Map.of("success", true, "message", "회원가입 성공"));
         }
     }
 

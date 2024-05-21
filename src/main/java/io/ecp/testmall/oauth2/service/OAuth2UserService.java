@@ -63,8 +63,15 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         KakaoUserInfo kakaoUserInfo = new KakaoUserInfo(attributes);
         String socialId = kakaoUserInfo.getSocialId();
 
-        Member member = memberRepository.findBySocialId(socialId).orElseThrow(
-                () -> new IllegalArgumentException("가입되지 않은 회원입니다."));
+        Optional<Member> memberOptional = memberRepository.findBySocialId(socialId);
+
+        Member member;
+        // 가입되지 않은 회원인 경우, 새로운 Member 객체를 생성하지만 저장하지 않습니다.
+        member = memberOptional.orElseGet(() -> Member.builder()
+                .socialId(socialId)
+                .email(kakaoUserInfo.getEmail())
+                .role(Role.USER)
+                .build());
 
         return new PrincipalDetail(member,
                 Collections.singleton(new SimpleGrantedAuthority(member.getRole().getName())), attributes);

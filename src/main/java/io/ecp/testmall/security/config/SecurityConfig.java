@@ -1,6 +1,7 @@
 package io.ecp.testmall.security.config;
 
 import io.ecp.testmall.jwt.filter.JwtVerifyFilter;
+import io.ecp.testmall.oauth2.handler.OAuth2LoginSuccessHandler;
 import io.ecp.testmall.oauth2.service.OAuth2UserService;
 import io.ecp.testmall.security.handler.CustomLoginFailHandler;
 import io.ecp.testmall.security.handler.CustomLoginSuccessHandler;
@@ -19,6 +20,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Configuration
@@ -27,21 +29,6 @@ public class SecurityConfig {
 
     @Autowired
     private OAuth2UserService oAuth2UserService;
-
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration corsConfiguration = new CorsConfiguration();
-
-        corsConfiguration.setAllowedOriginPatterns(List.of("*"));
-        corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        corsConfiguration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-type"));
-        corsConfiguration.setAllowCredentials(true);
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", corsConfiguration);
-
-        return source;
-    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -64,9 +51,12 @@ public class SecurityConfig {
     }
 
     @Bean
+    public OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler() {
+        return new OAuth2LoginSuccessHandler();
+    }
+
+    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()));
         http
                 .csrf(AbstractHttpConfigurer::disable);
         http
@@ -80,7 +70,7 @@ public class SecurityConfig {
                  .formLogin(AbstractHttpConfigurer::disable);
         http
                 .oauth2Login(auth -> auth
-                        .successHandler(customLoginSuccessHandler())
+                        .successHandler(oAuth2LoginSuccessHandler())
                         .userInfoEndpoint(userInfo -> userInfo.userService(oAuth2UserService)));
         return http.build();
     }
