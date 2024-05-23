@@ -23,7 +23,7 @@ public class JwtVerifyFilter extends OncePerRequestFilter {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    private static final String[] whitelist = {"/signup", "/login", "/login/oauth2/code/kakao", "/login/oauth2/kakao", "/refresh", "/", "/index.html"};
+    private static final String[] whitelist = {"/signup", "/login", "/login/oauth2/code/kakao", "/login/oauth2/kakao", "/"};
 
     private static void checkAuthorizationHeader(String header) {
         if (header == null) {

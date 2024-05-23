@@ -5,6 +5,8 @@ import io.ecp.testmall.member.entity.LoginForm;
 import io.ecp.testmall.member.entity.Member;
 import io.ecp.testmall.member.entity.MemberDTO;
 import io.ecp.testmall.member.service.MemberService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +32,6 @@ public class MemberController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody MemberDTO memberDTO) {
-        log.info("memberDTO = {}", memberDTO);
         Member byEmail = memberService.findByEmail(memberDTO.getEmail())
                 .orElse(null);
         if (byEmail != null) {
@@ -44,7 +45,7 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginForm loginForm) {
+    public ResponseEntity<?> login(@RequestBody LoginForm loginForm, HttpServletResponse response) {
         Optional<Member> optionalMember = memberService.findByEmail(loginForm.getEmail());
         if (optionalMember.isPresent()) {
             Member member = optionalMember.get();
@@ -53,7 +54,17 @@ public class MemberController {
                 claims.put("email", member.getEmail());
                 claims.put("role", member.getRole().toString());
                 String token = JwtUtils.generateToken(claims, 60); // 60분 동안 유효한 토큰 생성
-                return ResponseEntity.ok().body(Map.of("success", true, "token", "Bearer " + token));
+
+                Cookie cookie = new Cookie("Authorization", "Bearer " + token);
+                cookie.setHttpOnly(true);
+                cookie.setSecure(true);
+                cookie.setPath("/");
+                response.addCookie(cookie);
+
+                MemberDTO memberDTO = new MemberDTO();
+                memberDTO.setEmail(member.getEmail());
+                memberDTO.setName(member.getName());
+                return ResponseEntity.ok().body(Map.of("success", true, "user", memberDTO));
             }
         }
         return ResponseEntity.ok().body(Map.of("success", false, "message", "이메일 또는 비밀번호가 잘못되었습니다."));
