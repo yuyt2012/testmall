@@ -1,9 +1,7 @@
 package io.ecp.testmall.member.service;
 
-import io.ecp.testmall.member.entity.Address;
-import io.ecp.testmall.member.entity.Member;
-import io.ecp.testmall.member.entity.MemberDTO;
-import io.ecp.testmall.member.entity.Role;
+import io.ecp.testmall.member.Exception.CustomNotFountException;
+import io.ecp.testmall.member.entity.*;
 import io.ecp.testmall.member.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -42,5 +40,12 @@ public class MemberService {
                         .build())
                 .build();
         return memberRepository.save(member);
+    }
+
+    @Transactional(readOnly = false)
+    public Member updateMember(String email, UpdateMemberDTO updateMemberDTO) {
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new CustomNotFountException("해당 이메일을 가진 회원이 없습니다."));
+        return member.update(updateMemberDTO);
     }
 }

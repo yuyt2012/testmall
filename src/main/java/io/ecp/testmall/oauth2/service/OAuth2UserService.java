@@ -86,44 +86,4 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
                 .build();
         return memberRepository.save(newMember);
     }
-
-
-    public String getAccessToken(String code) {
-        RestTemplate restTemplate = new RestTemplate();
-
-        String credentials = clientId;
-        String encodedCredentials = new String(Base64.getEncoder().encode(credentials.getBytes()));
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Basic " + encodedCredentials);
-
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add(OAuth2ParameterNames.GRANT_TYPE, "authorization_code");
-        params.add(OAuth2ParameterNames.CODE, code);
-        params.add(OAuth2ParameterNames.REDIRECT_URI, "http://localhost:8080/login/oauth2/code/kakao");
-
-        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
-        ResponseEntity<OAuth2AccessTokenResponse> response = restTemplate.exchange(
-                "https://kauth.kakao.com/oauth/token", HttpMethod.POST, request, OAuth2AccessTokenResponse.class);
-
-        OAuth2AccessToken accessToken = response.getBody().getAccessToken();
-
-        return accessToken.getTokenValue();
-    }
-
-    public boolean isUserExistByToken(String accessToken) {
-        // 액세스 토큰을 사용하여 사용자의 이메일을 가져옵니다.
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + accessToken);
-        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(headers);
-        ResponseEntity<Map> response = restTemplate.exchange("https://kapi.kakao.com/v2/user/me", HttpMethod.GET, request, Map.class);
-        String email = (String) response.getBody().get("email");
-
-        // 이메일을 사용하여 데이터베이스에서 사용자를 찾습니다.
-        Optional<Member> member = memberRepository.findByEmail(email);
-
-        // 사용자가 데이터베이스에 있는지 여부를 반환합니다.
-        return member.isPresent();
-    }
 }

@@ -39,7 +39,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         String token = JwtUtils.generateToken(claims, 60);
 
         if (memberRepository.findByEmail(email).isPresent()) {
-            Cookie cookie = new Cookie("Authorization", "Bearer " + token);
+            Cookie cookie = new Cookie("Authorization", "Bearer+" + token);
             cookie.setHttpOnly(true);
             cookie.setSecure(true);
             cookie.setPath("/");
@@ -47,6 +47,8 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
             // 사용자 이름을 응답 바디에 저장
             response.getWriter().write("{\"user\":\"" + URLEncoder.encode(principalDetail.getMember().getName(), StandardCharsets.UTF_8.name()) + "\"}");
+            String redirectUrl = "http://localhost:5173/kakaoLoginSuccess";
+            response.sendRedirect(redirectUrl);
         } else {
             // 카카오 사용자 정보를 쿼리 파라미터로 추가
             String socialId = principalDetail.getMember().getSocialId();

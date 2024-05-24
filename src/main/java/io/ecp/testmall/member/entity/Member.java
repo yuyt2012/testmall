@@ -35,4 +35,17 @@ public class Member {
     @Embedded
     private Address address;
 
+    public Member update(UpdateMemberDTO updateMemberDTO) {
+        this.email = updateMemberDTO.getEmail();
+        this.password = updateMemberDTO.getPassword();
+        this.name = updateMemberDTO.getName();
+        this.socialId = updateMemberDTO.getSocialId();
+        this.phone = updateMemberDTO.getPhone();
+        this.address = Address.builder()
+                .city(updateMemberDTO.getCity())
+                .street(updateMemberDTO.getStreet())
+                .zipcode(updateMemberDTO.getZipcode())
+                .build();
+        return this;
+    }
 }

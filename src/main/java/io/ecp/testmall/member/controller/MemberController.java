@@ -1,17 +1,19 @@
 package io.ecp.testmall.member.controller;
 
 import io.ecp.testmall.jwt.utils.JwtUtils;
-import io.ecp.testmall.member.entity.LoginForm;
-import io.ecp.testmall.member.entity.Member;
-import io.ecp.testmall.member.entity.MemberDTO;
+import io.ecp.testmall.member.Exception.CustomNotFountException;
+import io.ecp.testmall.member.entity.*;
 import io.ecp.testmall.member.service.MemberService;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -55,7 +57,7 @@ public class MemberController {
                 claims.put("role", member.getRole().toString());
                 String token = JwtUtils.generateToken(claims, 60); // 60분 동안 유효한 토큰 생성
 
-                Cookie cookie = new Cookie("Authorization", "Bearer " + token);
+                Cookie cookie = new Cookie("Authorization", "Bearer+" + token);
                 cookie.setHttpOnly(true);
                 cookie.setSecure(true);
                 cookie.setPath("/");
@@ -64,9 +66,40 @@ public class MemberController {
                 MemberDTO memberDTO = new MemberDTO();
                 memberDTO.setEmail(member.getEmail());
                 memberDTO.setName(member.getName());
-                return ResponseEntity.ok().body(Map.of("success", true, "user", memberDTO));
+                memberDTO.setSocialId(member.getSocialId());
+                memberDTO.setPhone(member.getPhone());
+                memberDTO.setCity(member.getAddress().getCity());
+                memberDTO.setStreet(member.getAddress().getStreet());
+                memberDTO.setZipcode(member.getAddress().getZipcode());
+                String role = member.getRole().toString();
+                return ResponseEntity.ok().body(Map.of("success", true, "user", memberDTO, "role", role));
             }
         }
         return ResponseEntity.ok().body(Map.of("success", false, "message", "이메일 또는 비밀번호가 잘못되었습니다."));
+    }
+
+    @GetMapping("/userInfo")
+    public Map<String, Object> getUserInfo(HttpServletRequest request) {
+
+        // 이후 토큰 처리 로직...
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        PrincipalDetail principalDetail = (PrincipalDetail) authentication.getPrincipal();
+
+        Map<String, Object> userInfo = new HashMap<>();
+        userInfo.put("user", principalDetail.getMember().getName());
+
+        return userInfo;
+    }
+
+    @PatchMapping("/update")
+    public ResponseEntity<?> update(@RequestBody UpdateMemberDTO updateMemberDTO) {
+        try {
+            memberService.updateMember(updateMemberDTO.getEmail(), updateMemberDTO);
+            return ResponseEntity.ok().body(Map.of("success", true, "message", "회원 정보 수정 성공"));
+        } catch (CustomNotFountException e) {
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(Map.of("success", false, "error", e.getMessage()));
+        }
     }
 }
