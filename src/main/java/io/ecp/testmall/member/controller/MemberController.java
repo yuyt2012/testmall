@@ -4,16 +4,12 @@ import io.ecp.testmall.jwt.utils.JwtUtils;
 import io.ecp.testmall.member.Exception.CustomNotFountException;
 import io.ecp.testmall.member.entity.*;
 import io.ecp.testmall.member.service.MemberService;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +18,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:5174")
 public class MemberController {
 
     @Autowired
@@ -57,42 +54,48 @@ public class MemberController {
                 claims.put("role", member.getRole().toString());
                 String token = JwtUtils.generateToken(claims, 60); // 60분 동안 유효한 토큰 생성
 
-                Cookie cookie = new Cookie("Authorization", "Bearer+" + token);
-                cookie.setHttpOnly(true);
-                cookie.setSecure(true);
-                cookie.setPath("/");
-                response.addCookie(cookie);
+                response.addHeader("Authorization", "Bearer " + token);
+                response.addHeader("Access-Control-Expose-Headers", "Authorization");
 
-                MemberDTO memberDTO = new MemberDTO();
-                memberDTO.setEmail(member.getEmail());
-                memberDTO.setName(member.getName());
-                memberDTO.setSocialId(member.getSocialId());
-                memberDTO.setPhone(member.getPhone());
-                memberDTO.setCity(member.getAddress().getCity());
-                memberDTO.setStreet(member.getAddress().getStreet());
-                memberDTO.setZipcode(member.getAddress().getZipcode());
+                MemberDTO memberInfo = new MemberDTO();
+                memberInfo.setEmail(member.getEmail());
+                memberInfo.setName(member.getName());
+                memberInfo.setSocialId(member.getSocialId());
+                memberInfo.setPhone(member.getPhone());
+                memberInfo.setCity(member.getAddress().getCity());
+                memberInfo.setStreet(member.getAddress().getStreet());
+                memberInfo.setZipcode(member.getAddress().getZipcode());
                 String role = member.getRole().toString();
-                return ResponseEntity.ok().body(Map.of("success", true, "user", memberDTO, "role", role));
+                return ResponseEntity.ok().body(Map.of("success", true, "user", memberInfo, "role", role));
             }
         }
         return ResponseEntity.ok().body(Map.of("success", false, "message", "이메일 또는 비밀번호가 잘못되었습니다."));
     }
 
     @GetMapping("/userInfo")
-    public Map<String, Object> getUserInfo(HttpServletRequest request) {
+    public ResponseEntity<?> getUserInfo(@RequestParam String email) {
 
-        // 이후 토큰 처리 로직...
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        PrincipalDetail principalDetail = (PrincipalDetail) authentication.getPrincipal();
+        Member member = memberService.findByEmail(email)
+                .orElseThrow(() -> new CustomNotFountException("해당 이메일을 가진 회원이 없습니다."));
 
-        Map<String, Object> userInfo = new HashMap<>();
-        userInfo.put("user", principalDetail.getMember().getName());
-
-        return userInfo;
+        MemberDTO kakaoMemberInfo = new MemberDTO();
+        kakaoMemberInfo.setEmail(member.getEmail());
+        kakaoMemberInfo.setName(member.getName());
+        kakaoMemberInfo.setSocialId(member.getSocialId());
+        kakaoMemberInfo.setPhone(member.getPhone());
+        kakaoMemberInfo.setCity(member.getAddress().getCity());
+        kakaoMemberInfo.setStreet(member.getAddress().getStreet());
+        kakaoMemberInfo.setZipcode(member.getAddress().getZipcode());
+        String role = member.getRole().toString();
+        return ResponseEntity.ok().body(Map.of("success", true, "user", kakaoMemberInfo, "role", role));
     }
 
     @PatchMapping("/update")
-    public ResponseEntity<?> update(@RequestBody UpdateMemberDTO updateMemberDTO) {
+    public ResponseEntity<?> update(@RequestBody UpdateMemberDTO updateMemberDTO, @RequestHeader("Authorization") String token) {
+        String t = JwtUtils.extractToken(token);
+        if (!JwtUtils.validateToken(t)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("토큰이 유효하지 않습니다.");
+        }
         try {
             memberService.updateMember(updateMemberDTO.getEmail(), updateMemberDTO);
             return ResponseEntity.ok().body(Map.of("success", true, "message", "회원 정보 수정 성공"));

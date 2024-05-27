@@ -44,6 +44,21 @@ public class JwtUtils {
                 .compact();
     }
 
+    public static Map<String, Object> extractClaims(String token) {
+        try {
+            SecretKey key = Keys.hmacShaKeyFor(JwtUtils.secretKey.getBytes(StandardCharsets.UTF_8));
+            return Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (ExpiredJwtException expiredJwtException) {
+            throw new CustomExpireException("Token is expired");
+        } catch (Exception e) {
+            throw new CustomJwtException("Invalid token");
+        }
+    }
+
     public static Authentication getAuthentication(String token) {
         Map<String, Object> claims = null;
 
@@ -64,21 +79,22 @@ public class JwtUtils {
 
     }
 
-    public static Map<String, Object> validateToken(String token) {
-        Map<String, Object> claims = null;
+    public static boolean validateToken(String token) {
         try {
             SecretKey key = Keys.hmacShaKeyFor(JwtUtils.secretKey.getBytes(StandardCharsets.UTF_8));
-            claims = Jwts.parserBuilder()
+            Jwts.parserBuilder()
                     .setSigningKey(key)
                     .build()
                     .parseClaimsJws(token)
                     .getBody();
+            return true;
         } catch (ExpiredJwtException expiredJwtException) {
-            throw new CustomExpireException("토큰이 만료되었습니다.", expiredJwtException);
+            // 토큰이 만료된 경우, false 반환
+            return false;
         } catch (Exception e) {
-            throw new CustomJwtException("토큰이 유효하지 않습니다.");
+            // 토큰이 유효하지 않은 경우, false 반환
+            return false;
         }
-        return claims;
     }
 
     public static boolean isTokenExpired(String token) {

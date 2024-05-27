@@ -4,7 +4,6 @@ import io.ecp.testmall.jwt.utils.JwtUtils;
 import io.ecp.testmall.member.entity.PrincipalDetail;
 import io.ecp.testmall.member.repository.MemberRepository;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
@@ -15,8 +14,6 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,21 +35,6 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         claims.put("role", principalDetail.getMember().getRole().toString());
         String token = JwtUtils.generateToken(claims, 60);
 
-        if (memberRepository.findByEmail(email).isPresent()) {
-            Cookie cookie = new Cookie("Authorization", "Bearer+" + token);
-            cookie.setHttpOnly(true);
-            cookie.setSecure(true);
-            cookie.setPath("/");
-            response.addCookie(cookie);
-
-            // 사용자 이름을 응답 바디에 저장
-            response.getWriter().write("{\"user\":\"" + URLEncoder.encode(principalDetail.getMember().getName(), StandardCharsets.UTF_8.name()) + "\"}");
-            String redirectUrl = "http://localhost:5173/kakaoLoginSuccess";
-            response.sendRedirect(redirectUrl);
-        } else {
-            // 카카오 사용자 정보를 쿼리 파라미터로 추가
-            String socialId = principalDetail.getMember().getSocialId();
-            response.sendRedirect("http://localhost:5173/signup?email=" + email + "&socialId=" + socialId);
-        }
+        response.sendRedirect("http://localhost:5173/kakaoLoginSuccess?token=" + "Bearer " + token);
     }
 }
