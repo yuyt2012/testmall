@@ -53,14 +53,14 @@ public class JwtUtils {
                     .parseClaimsJws(token)
                     .getBody();
         } catch (ExpiredJwtException expiredJwtException) {
-            throw new CustomExpireException("Token is expired");
+            throw new CustomExpireException("Token is expired", expiredJwtException);
         } catch (Exception e) {
             throw new CustomJwtException("Invalid token");
         }
     }
 
     public static Authentication getAuthentication(String token) {
-        Map<String, Object> claims = null;
+        Map<String, Object> claims = extractClaims(token);
 
         String email = (String) claims.get("email");
         String name = (String) claims.get("name");
@@ -76,7 +76,6 @@ public class JwtUtils {
         PrincipalDetail principalDetails = new PrincipalDetail(member, authorities);
 
         return new UsernamePasswordAuthenticationToken(principalDetails, "", authorities);
-
     }
 
     public static boolean validateToken(String token) {
