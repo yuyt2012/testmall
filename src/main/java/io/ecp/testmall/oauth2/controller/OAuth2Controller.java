@@ -2,6 +2,7 @@ package io.ecp.testmall.oauth2.controller;
 
 import io.ecp.testmall.jwt.utils.JwtUtils;
 import io.ecp.testmall.member.entity.Member;
+import io.ecp.testmall.member.entity.MemberDTO;
 import io.ecp.testmall.member.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,9 +28,25 @@ public class OAuth2Controller {
 
         Optional<Member> byEmail = memberRepository.findByEmail(email);
         if (byEmail.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.OK).body("회원가입 필요");
+            return ResponseEntity.status(HttpStatus.OK).body(Map.of("message", "회원가입 필요", "email", email));
         }
+        Member member = memberRepository.findByEmail(email).get();
 
-        return ResponseEntity.status(HttpStatus.OK).body("로그인 성공");
+        MemberDTO memberInfo = getMemberInfo(member);
+        String role = member.getRole().toString();
+        return ResponseEntity.status(HttpStatus.OK).body(Map.of("message", "로그인 성공", "user", memberInfo, "role", role));
+    }
+
+    private static MemberDTO getMemberInfo(Member member) {
+        MemberDTO memberInfo = new MemberDTO();
+        memberInfo.setEmail(member.getEmail());
+        memberInfo.setPassword(member.getPassword());
+        memberInfo.setName(member.getName());
+        memberInfo.setPhone(member.getPhone());
+        memberInfo.setCity(member.getAddress().getCity());
+        memberInfo.setStreet(member.getAddress().getStreet());
+        memberInfo.setZipcode(member.getAddress().getZipcode());
+        memberInfo.setSocialLogin(member.getSocialLogin());
+        return memberInfo;
     }
 }

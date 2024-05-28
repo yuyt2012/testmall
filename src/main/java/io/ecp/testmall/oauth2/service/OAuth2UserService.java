@@ -61,14 +61,13 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         log.info("userNameAttributeName: {}", userNameAttributeName);
 
         KakaoUserInfo kakaoUserInfo = new KakaoUserInfo(attributes);
-        String socialId = kakaoUserInfo.getSocialId();
+        String email = kakaoUserInfo.getEmail();
 
-        Optional<Member> memberOptional = memberRepository.findBySocialId(socialId);
+        Optional<Member> memberOptional = memberRepository.findByEmail(email);
 
         Member member;
         // 가입되지 않은 회원인 경우, 새로운 Member 객체를 생성하지만 저장하지 않습니다.
         member = memberOptional.orElseGet(() -> Member.builder()
-                .socialId(socialId)
                 .email(kakaoUserInfo.getEmail())
                 .role(Role.USER)
                 .build());
@@ -80,7 +79,6 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
     @Transactional(readOnly = false)
     public Member saveKakaoUser(String socialId, String email) {
         Member newMember = Member.builder()
-                .socialId(socialId)
                 .email(email)
                 .role(Role.USER)
                 .build();

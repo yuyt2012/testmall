@@ -18,9 +18,9 @@ public class UpdateMemberDTO {
     private String password;
     @NotEmpty
     private String name;
-    private String socialId;
     private String phone;
     private String city;
     private String street;
     private String zipcode;
+    private String socialLogin;
 }

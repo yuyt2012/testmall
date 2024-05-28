@@ -8,14 +8,11 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -29,23 +26,23 @@ public class Member {
     private String password;
     private String name;
     private String phone;
-    private String socialId;
     @Enumerated(EnumType.STRING)
     private Role role;
     @Embedded
     private Address address;
+    private String socialLogin;
 
     public Member update(UpdateMemberDTO updateMemberDTO) {
         this.email = updateMemberDTO.getEmail();
         this.password = updateMemberDTO.getPassword();
         this.name = updateMemberDTO.getName();
-        this.socialId = updateMemberDTO.getSocialId();
         this.phone = updateMemberDTO.getPhone();
         this.address = Address.builder()
                 .city(updateMemberDTO.getCity())
                 .street(updateMemberDTO.getStreet())
                 .zipcode(updateMemberDTO.getZipcode())
                 .build();
+        this.socialLogin = updateMemberDTO.getSocialLogin();
         return this;
     }
 }

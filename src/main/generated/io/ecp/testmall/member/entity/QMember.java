@@ -36,7 +36,7 @@ public class QMember extends EntityPathBase<Member> {
 
     public final EnumPath<Role> role = createEnum("role", Role.class);
 
-    public final StringPath socialId = createString("socialId");
+    public final StringPath socialLogin = createString("socialLogin");
 
     public QMember(String variable) {
         this(Member.class, forVariable(variable), INITS);

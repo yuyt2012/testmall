@@ -57,14 +57,7 @@ public class MemberController {
                 response.addHeader("Authorization", "Bearer " + token);
                 response.addHeader("Access-Control-Expose-Headers", "Authorization");
 
-                MemberDTO memberInfo = new MemberDTO();
-                memberInfo.setEmail(member.getEmail());
-                memberInfo.setName(member.getName());
-                memberInfo.setSocialId(member.getSocialId());
-                memberInfo.setPhone(member.getPhone());
-                memberInfo.setCity(member.getAddress().getCity());
-                memberInfo.setStreet(member.getAddress().getStreet());
-                memberInfo.setZipcode(member.getAddress().getZipcode());
+                MemberDTO memberInfo = getMemberInfo(member);
                 String role = member.getRole().toString();
                 return ResponseEntity.ok().body(Map.of("success", true, "user", memberInfo, "role", role));
             }
@@ -81,7 +74,6 @@ public class MemberController {
         MemberDTO kakaoMemberInfo = new MemberDTO();
         kakaoMemberInfo.setEmail(member.getEmail());
         kakaoMemberInfo.setName(member.getName());
-        kakaoMemberInfo.setSocialId(member.getSocialId());
         kakaoMemberInfo.setPhone(member.getPhone());
         kakaoMemberInfo.setCity(member.getAddress().getCity());
         kakaoMemberInfo.setStreet(member.getAddress().getStreet());
@@ -97,12 +89,40 @@ public class MemberController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("토큰이 유효하지 않습니다.");
         }
         try {
-            memberService.updateMember(updateMemberDTO.getEmail(), updateMemberDTO);
-            return ResponseEntity.ok().body(Map.of("success", true, "message", "회원 정보 수정 성공"));
+            Member member = memberService.updateMember(updateMemberDTO.getEmail(), updateMemberDTO);
+            MemberDTO updateMemberInfo = getMemberInfo(member);
+            return ResponseEntity.ok().body(Map.of("success", true, "message", "회원 정보 수정 성공", "user", updateMemberInfo));
         } catch (CustomNotFountException e) {
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(Map.of("success", false, "error", e.getMessage()));
         }
+    }
+
+    @PostMapping("/passwordCheck")
+    public boolean passwordCheck(@RequestBody LoginForm passwordCheckForm, @RequestHeader("Authorization") String token) {
+        String t = JwtUtils.extractToken(token);
+        if (!JwtUtils.validateToken(t)) {
+            return false;
+        }
+        Optional<Member> optionalMember = memberService.findByEmail(passwordCheckForm.getEmail());
+        if (optionalMember.isPresent()) {
+            Member member = optionalMember.get();
+            return passwordEncoder.matches(passwordCheckForm.getPassword(), member.getPassword());
+        }
+        return false;
+    }
+
+    private static MemberDTO getMemberInfo(Member member) {
+        MemberDTO memberInfo = new MemberDTO();
+        memberInfo.setEmail(member.getEmail());
+        memberInfo.setPassword(member.getPassword());
+        memberInfo.setName(member.getName());
+        memberInfo.setPhone(member. getPhone());
+        memberInfo.setCity(member.getAddress().getCity());
+        memberInfo.setStreet(member.getAddress().getStreet());
+        memberInfo.setZipcode(member.getAddress().getZipcode());
+        memberInfo.setSocialLogin(member.getSocialLogin());
+        return memberInfo;
     }
 }
