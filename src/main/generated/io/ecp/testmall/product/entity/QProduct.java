@@ -22,7 +22,7 @@ public class QProduct extends EntityPathBase<Product> {
 
     public static final QProduct product = new QProduct("product");
 
-    public final io.ecp.testmall.category.entity.QProductCategory category;
+    public final io.ecp.testmall.category.entity.QCategory category;
 
     public final StringPath description = createString("description");
 
@@ -58,7 +58,7 @@ public class QProduct extends EntityPathBase<Product> {
 
     public QProduct(Class<? extends Product> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.category = inits.isInitialized("category") ? new io.ecp.testmall.category.entity.QProductCategory(forProperty("category"), inits.get("category")) : null;
+        this.category = inits.isInitialized("category") ? new io.ecp.testmall.category.entity.QCategory(forProperty("category"), inits.get("category")) : null;
     }
 
 }

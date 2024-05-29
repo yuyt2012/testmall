@@ -30,6 +30,8 @@ public class QMember extends EntityPathBase<Member> {
 
     public final StringPath name = createString("name");
 
+    public final ListPath<io.ecp.testmall.order.entity.Order, io.ecp.testmall.order.entity.QOrder> orders = this.<io.ecp.testmall.order.entity.Order, io.ecp.testmall.order.entity.QOrder>createList("orders", io.ecp.testmall.order.entity.Order.class, io.ecp.testmall.order.entity.QOrder.class, PathInits.DIRECT2);
+
     public final StringPath password = createString("password");
 
     public final StringPath phone = createString("phone");

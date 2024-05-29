@@ -8,6 +8,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -52,7 +55,7 @@ public class MemberController {
                 Map<String, Object> claims = new HashMap<>();
                 claims.put("email", member.getEmail());
                 claims.put("role", member.getRole().toString());
-                String token = JwtUtils.generateToken(claims, 60); // 60분 동안 유효한 토큰 생성
+                String token = JwtUtils.generateToken(claims, 60);
 
                 response.addHeader("Authorization", "Bearer " + token);
                 response.addHeader("Access-Control-Expose-Headers", "Authorization");
@@ -63,23 +66,6 @@ public class MemberController {
             }
         }
         return ResponseEntity.ok().body(Map.of("success", false, "message", "이메일 또는 비밀번호가 잘못되었습니다."));
-    }
-
-    @GetMapping("/userInfo")
-    public ResponseEntity<?> getUserInfo(@RequestParam String email) {
-
-        Member member = memberService.findByEmail(email)
-                .orElseThrow(() -> new CustomNotFountException("해당 이메일을 가진 회원이 없습니다."));
-
-        MemberDTO kakaoMemberInfo = new MemberDTO();
-        kakaoMemberInfo.setEmail(member.getEmail());
-        kakaoMemberInfo.setName(member.getName());
-        kakaoMemberInfo.setPhone(member.getPhone());
-        kakaoMemberInfo.setCity(member.getAddress().getCity());
-        kakaoMemberInfo.setStreet(member.getAddress().getStreet());
-        kakaoMemberInfo.setZipcode(member.getAddress().getZipcode());
-        String role = member.getRole().toString();
-        return ResponseEntity.ok().body(Map.of("success", true, "user", kakaoMemberInfo, "role", role));
     }
 
     @PatchMapping("/update")
@@ -97,6 +83,15 @@ public class MemberController {
                     .status(HttpStatus.OK)
                     .body(Map.of("success", false, "error", e.getMessage()));
         }
+    }
+
+    @GetMapping("/memberlist")
+    public Page<Member> memberList(@PageableDefault(size = 10) Pageable pageable, @RequestHeader("Authorization") String token) {
+        String t = JwtUtils.extractToken(token);
+        if (!JwtUtils.validateToken(t)) {
+            return null;
+        }
+        return memberService.searchPage(pageable);
     }
 
     @PostMapping("/passwordCheck")

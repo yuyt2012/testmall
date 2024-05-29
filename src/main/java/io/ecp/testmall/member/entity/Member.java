@@ -1,14 +1,11 @@
 package io.ecp.testmall.member.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import io.ecp.testmall.order.entity.Order;
+import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -31,18 +28,16 @@ public class Member {
     @Embedded
     private Address address;
     private String socialLogin;
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Order> orders = new ArrayList<>();
 
-    public Member update(UpdateMemberDTO updateMemberDTO) {
-        this.email = updateMemberDTO.getEmail();
-        this.password = updateMemberDTO.getPassword();
-        this.name = updateMemberDTO.getName();
-        this.phone = updateMemberDTO.getPhone();
-        this.address = Address.builder()
-                .city(updateMemberDTO.getCity())
-                .street(updateMemberDTO.getStreet())
-                .zipcode(updateMemberDTO.getZipcode())
-                .build();
-        this.socialLogin = updateMemberDTO.getSocialLogin();
-        return this;
+    public void addOrder(Order order) {
+        this.orders.add(order);
+        order.setMember(this);
+    }
+
+    public void removeOrder(Order order) {
+        this.orders.remove(order);
+        order.setMember(null);
     }
 }

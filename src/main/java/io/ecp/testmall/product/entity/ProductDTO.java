@@ -1,6 +1,6 @@
 package io.ecp.testmall.product.entity;
 
-import io.ecp.testmall.category.entity.ProductCategory;
+import io.ecp.testmall.category.entity.Category;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 
@@ -16,7 +16,7 @@ public class ProductDTO {
     @NotEmpty
     private int stockQuantity;
     @NotEmpty
-    private ProductCategory category;
+    private Category category;
     @NotEmpty
     private String description;
     private Date regDate;

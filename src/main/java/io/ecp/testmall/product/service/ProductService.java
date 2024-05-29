@@ -19,16 +19,4 @@ public class ProductService {
     public List<Product> findAll() {
         return productRepository.findAll();
     }
-
-    @Transactional(readOnly = false)
-    public Product saveProduct(ProductDTO productDTO) {
-        Product product = Product.builder()
-                .name(productDTO.getName())
-                .price(productDTO.getPrice())
-                .description(productDTO.getDescription())
-                .stockQuantity(productDTO.getStockQuantity())
-                .category(productDTO.getCategory())
-                .build();
-        return productRepository.save(product);
-    }
 }
