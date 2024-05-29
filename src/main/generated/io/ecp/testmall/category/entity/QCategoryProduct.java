@@ -47,7 +47,7 @@ public class QCategoryProduct extends EntityPathBase<CategoryProduct> {
     public QCategoryProduct(Class<? extends CategoryProduct> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.category = inits.isInitialized("category") ? new QCategory(forProperty("category"), inits.get("category")) : null;
-        this.product = inits.isInitialized("product") ? new io.ecp.testmall.product.entity.QProduct(forProperty("product"), inits.get("product")) : null;
+        this.product = inits.isInitialized("product") ? new io.ecp.testmall.product.entity.QProduct(forProperty("product")) : null;
     }
 
 }
