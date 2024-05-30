@@ -16,7 +16,9 @@ public class ProductDTO {
     @NotEmpty
     private int stockQuantity;
     @NotEmpty
-    private Category category;
+    private String parentCategory;
+    @NotEmpty
+    private String childCategory;
     @NotEmpty
     private String description;
     private Date regDate;

@@ -21,9 +21,6 @@ public class InitDatabase {
     private MemberRepository memberRepository;
 
     @Autowired
-    private CategoryRepository categoryRepository;
-
-    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Bean
@@ -40,33 +37,6 @@ public class InitDatabase {
                         .address(address) // 주소 설정
                         .build();
                 memberRepository.save(admin);
-
-                Category skincare = new Category();
-                skincare.setName("스킨케어");
-
-                Category makeup = new Category();
-                makeup.setName("메이크업");
-
-                Category perfume = new Category();
-                perfume.setName("향수");
-
-                // 상위 카테고리 저장
-                categoryRepository.save(skincare);
-                categoryRepository.save(makeup);
-                categoryRepository.save(perfume);
-
-                // 하위 카테고리 생성
-                Category skin = new Category();
-                skin.setName("스킨");
-                skin.setParent(skincare);
-
-                Category lotion = new Category();
-                lotion.setName("로션");
-                lotion.setParent(skincare);
-
-                // 하위 카테고리 저장
-                categoryRepository.save(skin);
-                categoryRepository.save(lotion);
             }
         };
     }

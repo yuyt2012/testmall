@@ -3,12 +3,12 @@ package io.ecp.testmall.category.controller;
 import io.ecp.testmall.category.entity.Category;
 import io.ecp.testmall.category.entity.CategoryDTO;
 import io.ecp.testmall.category.service.CategoryService;
+import io.ecp.testmall.jwt.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 public class CategoryController {
@@ -17,14 +17,22 @@ public class CategoryController {
     private CategoryService categoryService;
 
     @PostMapping("/category")
-    public ResponseEntity<Category> createCategory(@RequestBody CategoryDTO categoryDTO) {
-        Category category = categoryService.createCategory(categoryDTO);
+    public ResponseEntity<Category> createCategoryWithSubCategories(@RequestBody CategoryDTO categoryDTO, @RequestHeader("Authorization") String token) {
+        String t = JwtUtils.extractToken(token);
+        if (!JwtUtils.validateToken(t)) {
+            return ResponseEntity.badRequest().build();
+        }
+        Category category = categoryService.createCategoryWithSubCategories(categoryDTO);
         return ResponseEntity.ok(category);
     }
 
-    @PostMapping("/category/{parentId}")
-    public ResponseEntity<Category> createSubCategory(@PathVariable Long parentId, @RequestBody CategoryDTO categoryDTO) {
-        Category subCategory = categoryService.createSubCategory(parentId, categoryDTO);
-        return ResponseEntity.ok(subCategory);
+    @GetMapping("/categories")
+    public ResponseEntity<List<Category>> getCategories(@RequestHeader("Authorization") String token) {
+        String t = JwtUtils.extractToken(token);
+        if (!JwtUtils.validateToken(t)) {
+            return ResponseEntity.badRequest().build();
+        }
+        List<Category> categories = categoryService.getAllCategories();
+        return ResponseEntity.ok(categories);
     }
 }

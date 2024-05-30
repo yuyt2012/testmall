@@ -7,6 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @Transactional(readOnly = true)
 public class CategoryService {
@@ -15,22 +18,33 @@ public class CategoryService {
     private CategoryRepository categoryRepository;
 
     @Transactional(readOnly = false)
-    public Category createCategory(CategoryDTO categoryDTO) {
-        Category category = Category.builder()
-                .name(categoryDTO.getName())
+    public Category createCategoryWithSubCategories(CategoryDTO categoryDTO) {
+        // 부모 카테고리를 데이터베이스에서 검색합니다.
+        Category parent = categoryRepository.findByName(categoryDTO.getName())
+                .orElse(null);
+
+        // 만약 부모 카테고리가 존재하지 않는다면, 새로운 부모 카테고리를 생성합니다.
+        if (parent == null) {
+            parent = Category.builder()
+                    .name(categoryDTO.getName())
+                    .build();
+            categoryRepository.save(parent);
+        }
+
+        // 자식 카테고리를 생성하고, 이를 부모 카테고리의 하위 카테고리로 추가합니다.
+        Category subCategory = Category.builder()
+                .name(categoryDTO.getSubCategory())
                 .build();
-        return categoryRepository.save(category);
+
+        parent.addSubCategory(subCategory);
+
+        // 부모 카테고리를 데이터베이스에 저장합니다.
+        return categoryRepository.save(parent);
     }
 
-    @Transactional(readOnly = false)
-    public Category createSubCategory(Long parentId, CategoryDTO categoryDTO) {
-        Category parent = categoryRepository.findById(parentId)
-                .orElseThrow(() -> new RuntimeException("Category not found"));
-        Category subCategory = Category.builder()
-                .name(categoryDTO.getName())
-                .build();
-        parent.addSubCategory(subCategory);
-        categoryRepository.save(parent);
-        return subCategory;
+    public List<Category> getAllCategories() {
+        return categoryRepository.findAll().stream()
+                .filter(Category::isTopCategory)
+                .collect(Collectors.toList());
     }
 }
