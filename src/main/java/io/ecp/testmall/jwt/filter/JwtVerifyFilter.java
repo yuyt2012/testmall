@@ -15,6 +15,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.PatternMatchUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -56,18 +57,13 @@ public class JwtVerifyFilter extends OncePerRequestFilter {
 
             filterChain.doFilter(request, response);
 
-        } catch (Exception e) {
-            Gson gson = new Gson();
-            String json = "";
-            if (e instanceof CustomExpireException) {
-                json = gson.toJson(Map.of("TokenExpired", e.getMessage()));
-            } else {
-                json = gson.toJson(Map.of("error", e.getMessage()));
-            }
-            response.setContentType("application/json; charset=utf-8");
-            PrintWriter printWriter = response.getWriter();
-            printWriter.print(json);
-            printWriter.close();
+        } catch (AuthenticationException e) {
+            // Use getWriter() to send the error message
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json;charset=UTF-8");
+            PrintWriter out = response.getWriter();
+            out.print("{\"message\":\"Unauthorized\"}");
+            out.flush();
         }
     }
 }

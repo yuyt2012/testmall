@@ -21,6 +21,4 @@ public class ProductDTO {
     private String childCategory;
     @NotEmpty
     private String description;
-    private Date regDate;
-    private Date updateDate;
 }

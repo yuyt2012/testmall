@@ -7,6 +7,8 @@ import io.ecp.testmall.product.entity.Product;
 import io.ecp.testmall.product.entity.ProductDTO;
 import io.ecp.testmall.product.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +26,10 @@ public class ProductService {
 
     public List<Product> findAll() {
         return productRepository.findAll();
+    }
+
+    public Page<Product> searchAll(Pageable pageable) {
+            return productRepository.searchAll(pageable);
     }
 
     @Transactional(readOnly = false)

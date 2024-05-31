@@ -28,15 +28,19 @@ public class InitDatabase {
         return new ApplicationRunner() {
             @Override
             public void run(ApplicationArguments args) throws Exception {
-                Address address = new Address("city", "street", "zipcode");
-                Member admin = Member.builder()
-                        .email("admin@test.com")
-                        .name("admin")
-                        .password(passwordEncoder.encode("admin")) // 비밀번호를 암호화하여 저장
-                        .role(Role.ADMIN)
-                        .address(address) // 주소 설정
-                        .build();
-                memberRepository.save(admin);
+                String email = "admin@test.com";
+                Member member = memberRepository.findByEmail(email).orElse(null);
+                if (member == null) {
+                    Address address = new Address("city", "street", "zipcode");
+                    Member admin = Member.builder()
+                            .email(email)
+                            .name("admin")
+                            .password(passwordEncoder.encode("admin")) // 비밀번호를 암호화하여 저장
+                            .role(Role.ADMIN)
+                            .address(address) // 주소 설정
+                            .build();
+                    memberRepository.save(admin);
+                }
             }
         };
     }
