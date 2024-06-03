@@ -18,6 +18,7 @@ public class ProductListDTO {
     private boolean isSoldOut;
     private String parentCategoryName;
     private List<String> subCategoryNames;
+    private String imageUrl;
     @NotEmpty
     private String description;
     private Date regDate;
@@ -31,6 +32,7 @@ public class ProductListDTO {
         this.isSoldOut = product.isSoldOut();
         this.parentCategoryName = product.getParentCategoryName();
         this.subCategoryNames = product.getSubCategoryNames();
+        this.imageUrl = product.getImageUrl();
         this.description = product.getDescription();
         this.regDate = product.getRegDate();
         this.updateDate = product.getUpdateDate();

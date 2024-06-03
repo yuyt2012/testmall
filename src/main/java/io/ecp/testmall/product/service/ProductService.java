@@ -47,6 +47,7 @@ public class ProductService {
                 .price(productDTO.getPrice())
                 .stockQuantity(productDTO.getStockQuantity())
                 .description(productDTO.getDescription())
+                .imageUrl(productDTO.getImageUrl())
                 .build();
         CategoryProduct categoryProduct = new CategoryProduct();
         categoryProduct.setCategory(childCategory);

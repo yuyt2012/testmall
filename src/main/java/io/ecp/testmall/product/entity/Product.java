@@ -26,6 +26,7 @@ public class Product {
     private int price;
     private int stockQuantity;
     private boolean isSoldOut;
+    private String imageUrl;
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
     private List<CategoryProduct> categoryProducts = new ArrayList<>();

@@ -26,6 +26,8 @@ public class QProduct extends EntityPathBase<Product> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final StringPath imageUrl = createString("imageUrl");
+
     public final BooleanPath isSoldOut = createBoolean("isSoldOut");
 
     public final StringPath name = createString("name");

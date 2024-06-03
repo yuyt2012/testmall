@@ -16,6 +16,8 @@ public class ProductDTO {
     @NotEmpty
     private int stockQuantity;
     @NotEmpty
+    private String imageUrl;
+    @NotEmpty
     private String parentCategory;
     @NotEmpty
     private String childCategory;
