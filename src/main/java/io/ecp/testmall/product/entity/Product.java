@@ -4,6 +4,7 @@ import io.ecp.testmall.category.entity.Category;
 import io.ecp.testmall.category.entity.CategoryProduct;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -30,6 +31,7 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
     private List<CategoryProduct> categoryProducts = new ArrayList<>();
+    @Length(max = 1000, message = "상품 설명은 1000자 이내로 작성해주세요.")
     private String description;
     @Temporal(TemporalType.TIMESTAMP)
     private Date regDate;

@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import static io.ecp.testmall.utils.tokenValidUtils.tokenValid;
+
 @RestController
 @CrossOrigin(origins = "http://localhost:5174")
 public class MemberController {
@@ -47,7 +49,8 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginForm loginForm, HttpServletResponse response) {
+    public ResponseEntity<?> login(@RequestBody LoginForm loginForm,
+                                   HttpServletResponse response) {
         Optional<Member> optionalMember = memberService.findByEmail(loginForm.getEmail());
         if (optionalMember.isPresent()) {
             Member member = optionalMember.get();
@@ -69,11 +72,10 @@ public class MemberController {
     }
 
     @PatchMapping("/update")
-    public ResponseEntity<?> update(@RequestBody UpdateMemberDTO updateMemberDTO, @RequestHeader("Authorization") String token) {
-        String t = JwtUtils.extractToken(token);
-        if (!JwtUtils.validateToken(t)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("토큰이 유효하지 않습니다.");
-        }
+    public ResponseEntity<?> update(@RequestBody UpdateMemberDTO updateMemberDTO,
+                                    @RequestHeader("Authorization") String token) {
+
+        if (tokenValid(token)) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("토큰이 유효하지 않습니다.");
         try {
             Member member = memberService.updateMember(updateMemberDTO.getEmail(), updateMemberDTO);
             MemberDTO updateMemberInfo = getMemberInfo(member);
@@ -86,20 +88,16 @@ public class MemberController {
     }
 
     @GetMapping("/memberlist")
-    public Page<Member> memberList(@PageableDefault(size = 10) Pageable pageable, @RequestHeader("Authorization") String token) {
-        String t = JwtUtils.extractToken(token);
-        if (!JwtUtils.validateToken(t)) {
-            return null;
-        }
+    public Page<Member> memberList(@PageableDefault(size = 10) Pageable pageable,
+                                   @RequestHeader("Authorization") String token) {
+        if (tokenValid(token)) return null;
         return memberService.searchPage(pageable);
     }
 
     @PostMapping("/passwordCheck")
-    public boolean passwordCheck(@RequestBody LoginForm passwordCheckForm, @RequestHeader("Authorization") String token) {
-        String t = JwtUtils.extractToken(token);
-        if (!JwtUtils.validateToken(t)) {
-            return false;
-        }
+    public boolean passwordCheck(@RequestBody LoginForm passwordCheckForm,
+                                 @RequestHeader("Authorization") String token) {
+        if (tokenValid(token)) return false;
         Optional<Member> optionalMember = memberService.findByEmail(passwordCheckForm.getEmail());
         if (optionalMember.isPresent()) {
             Member member = optionalMember.get();

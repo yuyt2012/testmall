@@ -32,6 +32,11 @@ public class ProductService {
             return productRepository.searchAll(pageable);
     }
 
+    public Product findById(Long id) {
+        return productRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid product Id:" + id));
+    }
+
     @Transactional(readOnly = false)
     public void saveProduct(ProductDTO productDTO) {
         Category parentCategory = categoryRepository.findByName(productDTO.getParentCategory())

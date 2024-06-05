@@ -18,6 +18,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 
+import static io.ecp.testmall.utils.tokenValidUtils.tokenValid;
+
 @RestController
 @CrossOrigin(origins = "http://localhost:5174")
 public class ProductController {
@@ -29,8 +31,7 @@ public class ProductController {
     public ResponseEntity<?> saveProduct(@RequestPart("productDTO") MultipartFile productDTOStr,
                                          @RequestPart("image") MultipartFile imageFile,
                                          @RequestHeader("Authorization") String token) {
-        String t = JwtUtils.extractToken(token);
-        if (!JwtUtils.validateToken(t)) {
+        if (tokenValid(token)) {
             return ResponseEntity.badRequest().body("Invalid token");
         }
 
@@ -51,11 +52,9 @@ public class ProductController {
     }
 
     @GetMapping("/productList")
-    public Page<ProductListDTO> productList(@PageableDefault(size = 10) Pageable pageable, @RequestHeader("Authorization") String token) {
-        String t = JwtUtils.extractToken(token);
-        if (!JwtUtils.validateToken(t)) {
-            return null;
-        }
+    public Page<ProductListDTO> productList(@PageableDefault(size = 10) Pageable pageable,
+                                            @RequestHeader("Authorization") String token) {
+        if (tokenValid(token)) return null;
         Page<Product> products = productService.searchAll(pageable);
         return products.map(ProductListDTO::new);
     }
@@ -63,5 +62,15 @@ public class ProductController {
     @GetMapping("/product/findall")
     public ResponseEntity<?> findAll() {
         return ResponseEntity.ok().body(productService.findAll());
+    }
+
+    @GetMapping("/product/{id}")
+    public ResponseEntity<?> findProductById(@PathVariable Long id,
+                                             @RequestHeader("Authorization") String token) {
+        if (tokenValid(token)) return null;
+        Product product = productService.findById(id);
+        if (product == null) {
+            return ResponseEntity.badRequest().body("Product not found");
+        } return ResponseEntity.ok().body(product);
     }
 }

@@ -2,6 +2,7 @@ package io.ecp.testmall.product.entity;
 
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
 
 import java.util.Date;
 import java.util.List;

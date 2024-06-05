@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 import java.util.Optional;
 
+import static io.ecp.testmall.utils.tokenValidUtils.tokenValid;
+
 @RestController
 @CrossOrigin(origins = "http://localhost:5174")
 public class OAuth2Controller {
@@ -20,11 +22,9 @@ public class OAuth2Controller {
     private MemberRepository memberRepository;
 
     @GetMapping("/kakaoLoginSuccess")
-    public ResponseEntity<?> kakaoLoginSuccess(@RequestParam String email, @RequestHeader("Authorization") String token) {
-        String t = JwtUtils.extractToken(token);
-        if (!JwtUtils.validateToken(t)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("토큰이 유효하지 않습니다.");
-        }
+    public ResponseEntity<?> kakaoLoginSuccess(@RequestParam String email,
+                                               @RequestHeader("Authorization") String token) {
+        if (tokenValid(token)) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("토큰이 유효하지 않습니다.");
 
         Optional<Member> byEmail = memberRepository.findByEmail(email);
         if (byEmail.isEmpty()) {
