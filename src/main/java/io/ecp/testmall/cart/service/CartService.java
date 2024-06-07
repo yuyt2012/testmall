@@ -3,6 +3,7 @@ package io.ecp.testmall.cart.service;
 import io.ecp.testmall.cart.entity.Cart;
 import io.ecp.testmall.cart.entity.CartProduct;
 import io.ecp.testmall.cart.entity.CartProductDTO;
+import io.ecp.testmall.cart.entity.CartProductListDTO;
 import io.ecp.testmall.cart.repository.CartProductRepository;
 import io.ecp.testmall.cart.repository.CartRepository;
 import io.ecp.testmall.member.entity.Member;
@@ -69,11 +70,21 @@ public class CartService {
         return savedCartProduct.getId();
     }
 
-    public Page<CartProduct> getCartProducts(Pageable pageable, String email) {
+    public Page<CartProductListDTO> getCartProducts(Pageable pageable, String email) {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("해당 회원이 존재하지 않습니다."));
         Cart cart = cartRepository.findByMemberId(member.getId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 회원의 장바구니가 존재하지 않습니다."));
         return cartProductRepository.searchCartProduct(pageable, cart.getId());
+    }
+
+    @Transactional(readOnly = false)
+    public void deleteCartProduct(String productName, Long userId) {
+        Cart cart = cartRepository.findByMemberId(userId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 회원의 장바구니가 존재하지 않습니다."));
+        Product product = productRepository.findByName(productName)
+                .orElseThrow(() -> new IllegalArgumentException("해당 상품이 존재하지 않습니다."));
+        cartProductRepository.findByCartIdAndProductId(cart.getId(), product.getId())
+                .ifPresent(cartProductRepository::delete);
     }
 }

@@ -2,6 +2,7 @@ package io.ecp.testmall.cart.controller;
 
 import io.ecp.testmall.cart.entity.CartProduct;
 import io.ecp.testmall.cart.entity.CartProductDTO;
+import io.ecp.testmall.cart.entity.CartProductListDTO;
 import io.ecp.testmall.cart.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -29,10 +30,19 @@ public class CartController {
     }
 
     @GetMapping("/cart/products/{email}")
-    public Page<CartProduct> cartProducts(@PageableDefault(size = 10) Pageable pageable,
-                                          @PathVariable String email,
-                                          @RequestHeader("Authorization") String token) {
+    public Page<CartProductListDTO> cartProducts(@PageableDefault(size = 10) Pageable pageable,
+                                                 @PathVariable String email,
+                                                 @RequestHeader("Authorization") String token) {
         if (tokenValid(token)) return null;
         return cartService.getCartProducts(pageable, email);
+    }
+
+    @DeleteMapping("/cart/delete/{productName}/{userId}")
+    public ResponseEntity<?> deleteCartProduct(@PathVariable String productName,
+                                               @PathVariable Long userId,
+                                               @RequestHeader("Authorization") String token) {
+        if (tokenValid(token)) return ResponseEntity.badRequest().build();
+        cartService.deleteCartProduct(productName, userId);
+        return ResponseEntity.ok().build();
     }
 }
