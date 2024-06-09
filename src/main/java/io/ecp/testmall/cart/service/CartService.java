@@ -79,8 +79,10 @@ public class CartService {
     }
 
     @Transactional(readOnly = false)
-    public void deleteCartProduct(String productName, Long userId) {
-        Cart cart = cartRepository.findByMemberId(userId)
+    public void deleteCartProduct(String productName, String userEmail) {
+        Member member = memberRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new IllegalArgumentException("해당 회원이 존재하지 않습니다."));
+        Cart cart = cartRepository.findByMemberId(member.getId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 회원의 장바구니가 존재하지 않습니다."));
         Product product = productRepository.findByName(productName)
                 .orElseThrow(() -> new IllegalArgumentException("해당 상품이 존재하지 않습니다."));

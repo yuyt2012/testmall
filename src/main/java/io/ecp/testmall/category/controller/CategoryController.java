@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static io.ecp.testmall.utils.tokenValidUtils.tokenValid;
-
 @RestController
 @CrossOrigin(origins = "http://localhost:5174")
 public class CategoryController {
@@ -20,18 +18,13 @@ public class CategoryController {
     private CategoryService categoryService;
 
     @PostMapping("/category")
-    public ResponseEntity<Category> createCategoryWithSubCategories(@RequestBody CategoryDTO categoryDTO,
-                                                                    @RequestHeader("Authorization") String token) {
-        if (tokenValid(token)) return ResponseEntity.badRequest().build();
-
+    public ResponseEntity<Category> createCategoryWithSubCategories(@RequestBody CategoryDTO categoryDTO) {
         Category category = categoryService.createCategoryWithSubCategories(categoryDTO);
         return ResponseEntity.ok(category);
     }
 
     @GetMapping("/categories")
-    public ResponseEntity<List<Category>> getCategories(@RequestHeader("Authorization") String token) {
-        if (tokenValid(token)) return ResponseEntity.badRequest().build();
-
+    public ResponseEntity<List<Category>> getCategories() {
         List<Category> categories = categoryService.getAllCategories();
         return ResponseEntity.ok(categories);
     }

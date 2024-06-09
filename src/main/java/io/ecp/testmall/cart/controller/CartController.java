@@ -37,12 +37,12 @@ public class CartController {
         return cartService.getCartProducts(pageable, email);
     }
 
-    @DeleteMapping("/cart/delete/{productName}/{userId}")
+    @DeleteMapping("/cart/delete/{productName}/{userEmail}")
     public ResponseEntity<?> deleteCartProduct(@PathVariable String productName,
-                                               @PathVariable Long userId,
+                                               @PathVariable String userEmail,
                                                @RequestHeader("Authorization") String token) {
         if (tokenValid(token)) return ResponseEntity.badRequest().build();
-        cartService.deleteCartProduct(productName, userId);
+        cartService.deleteCartProduct(productName, userEmail);
         return ResponseEntity.ok().build();
     }
 }
