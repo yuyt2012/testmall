@@ -71,7 +71,7 @@ public class MemberController {
         return ResponseEntity.ok().body(Map.of("success", false, "message", "이메일 또는 비밀번호가 잘못되었습니다."));
     }
 
-    @PatchMapping("/update")
+    @PatchMapping("/member/update")
     public ResponseEntity<?> update(@RequestBody UpdateMemberDTO updateMemberDTO,
                                     @RequestHeader("Authorization") String token) {
 

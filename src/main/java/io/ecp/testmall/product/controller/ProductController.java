@@ -51,7 +51,7 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/productList")
+    @GetMapping("/productlist")
     public Page<ProductListDTO> productList(@PageableDefault(size = 10) Pageable pageable,
                                             @RequestHeader("Authorization") String token) {
         if (tokenValid(token)) return null;

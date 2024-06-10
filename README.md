@@ -94,3 +94,27 @@ erDiagram
     CARTPRODUCT ||--|| CART : "belongs_to"
     CARTPRODUCT ||--|| PRODUCT : "contains"
 ```
+---
+## 3. API 명세서
+### 1. 회원관련
+| Method |      Path      |   Description    |
+|:------:|:--------------:|:----------------:|
+|  POST  |    /signup     |    회원가입을 한다.     |
+|  POST  |     /login     |     로그인을 한다.     |
+| PATCH  | /member/update |   회원정보를 수정한다.    |
+|  GET   |  /memberlist   |   회원목록을 가져온다.    |
+|  POST  |  /passwordCheck   |   비밀번호 유효성 검사.   |
+|  GET   |  /kakaoLoginSuccess   | 카카오로 로그인 했을때 처리. |
+
+### 2. 상품관련
+| Method |     Path      |      Description      |
+|:------:|:-------------:|:---------------------:|
+|  POST  | /product/save |       상품을 등록한다.       |
+|  GET   | /productlist  |      상품목록을 제공한다.      |
+|  GET   | /product/{id} |   특정 상품의 정보를 제공한다.    |
+|  POST  |   /category   |     카테고리를 등록합니다.      |
+|  GET   |  /categories  |    카테고리 목록을 제공합니다.    |
+|  POST  |  /cart/add    |   장바구니에 상품을 등록합니다.    |
+|  GET   |  /cart/products/{email}   | 특정회원의 장바구니 목록을 제공합니다. |
+| DELETE | /cart/delete/{productName}/{userEmail}  | 특정회원의 장바구니 상품을 삭제합니다. |
+
