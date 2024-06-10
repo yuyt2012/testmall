@@ -36,11 +36,14 @@ erDiagram
         OrderStatus orderStatus
         Date regDate
         Date updateDate
+        Long member_id FK
     }
     ORDERPRODUCT {
         Long id PK "order_product_id"
         int price
         int quantity
+        Long order_id FK
+        Long product_id FK
     }
     PRODUCT {
         Long id PK "product_id"
@@ -57,20 +60,27 @@ erDiagram
         Long id PK "delivery_id"
         Address address
         DeliveryStatus deliveryStatus
+        Long order_id FK
     }
     CATEGORY {
         Long id PK "category_id"
         String name
+        Long parent_id FK
     }
     CATEGORYPRODUCT {
         Long id PK "category_product_id"
+        Long category_id FK
+        Long product_id FK
     }
     CART {
         Long id PK "cart_id"
+        Long member_id FK
     }
     CARTPRODUCT {
         Long id PK "cart_product_id"
         int quantity
+        Long cart_id FK
+        Long product_id FK
     }
     MEMBER ||--o{ ORDER : "places"
     ORDER ||--o{ ORDERPRODUCT : "contains"
