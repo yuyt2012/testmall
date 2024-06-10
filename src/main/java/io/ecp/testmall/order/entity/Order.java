@@ -21,6 +21,8 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_id")
     private Long id;
+    private String paymentMethod;
+    private String shippingMethod;
     @Temporal(TemporalType.DATE)
     private Date orderDate;
     @Enumerated(EnumType.STRING)
