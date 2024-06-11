@@ -32,6 +32,8 @@ erDiagram
     }
     ORDER {
         Long id PK "order_id"
+        String paymentMethod
+        String shippingMethod
         Date orderDate
         OrderStatus orderStatus
         Date regDate
@@ -58,6 +60,11 @@ erDiagram
     }
     DELIVERY {
         Long id PK "delivery_id"
+        String receiverName
+        String receiverPhone
+        String receiverCity
+        String receiverStreet
+        String receiverZipcode
         Address address
         DeliveryStatus deliveryStatus
         Long order_id FK

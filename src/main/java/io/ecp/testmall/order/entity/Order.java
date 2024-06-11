@@ -12,7 +12,7 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "orders")
 public class Order {
@@ -23,6 +23,7 @@ public class Order {
     private Long id;
     private String paymentMethod;
     private String shippingMethod;
+    private int totalPrice;
     @Temporal(TemporalType.DATE)
     private Date orderDate;
     @Enumerated(EnumType.STRING)

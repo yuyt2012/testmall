@@ -34,7 +34,11 @@ public class QOrder extends EntityPathBase<Order> {
 
     public final EnumPath<OrderStatus> orderStatus = createEnum("orderStatus", OrderStatus.class);
 
+    public final StringPath paymentMethod = createString("paymentMethod");
+
     public final DateTimePath<java.util.Date> regDate = createDateTime("regDate", java.util.Date.class);
+
+    public final StringPath shippingMethod = createString("shippingMethod");
 
     public final DateTimePath<java.util.Date> updateDate = createDateTime("updateDate", java.util.Date.class);
 

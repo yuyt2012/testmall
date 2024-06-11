@@ -39,7 +39,7 @@ public class ProductController {
             ObjectMapper objectMapper = new ObjectMapper();
             ProductDTO productDTO = objectMapper.readValue(productDTOStr.getInputStream(), ProductDTO.class);
 
-            String uploadDir = "/Users/yooyoungtae/Desktop/testMall/src/";
+            String uploadDir = "C:/Users/Public/Documents/study/testmall/src/uploaded-images/";
             String originalFilename = imageFile.getOriginalFilename();
             String filePath = uploadDir + originalFilename;
             imageFile.transferTo(new File(filePath));

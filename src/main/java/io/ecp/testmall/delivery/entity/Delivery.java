@@ -6,8 +6,9 @@ import lombok.*;
 
 @Entity
 @Getter
+@Setter
 @Builder
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @AllArgsConstructor
 public class Delivery {
 
@@ -17,9 +18,6 @@ public class Delivery {
     private Long id;
     private String receiverName;
     private String receiverPhone;
-    private String receiverCity;
-    private String receiverStreet;
-    private String receiverZipcode;
     @Embedded
     private Address address;
     @Enumerated(EnumType.STRING)
