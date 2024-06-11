@@ -1,5 +1,6 @@
 package io.ecp.testmall.order.controller;
 
+import io.ecp.testmall.order.entity.Order;
 import io.ecp.testmall.order.entity.OrderDTO;
 import io.ecp.testmall.order.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ public class OrderController {
     public ResponseEntity<?> saveOrder(@RequestBody OrderDTO orderDTO,
                           @RequestHeader("Authorization") String token) {
         if (tokenValid(token)) return ResponseEntity.badRequest().build();
-        orderService.saveOrder(orderDTO);
+        Order order = orderService.saveOrder(orderDTO);
+        return ResponseEntity.ok("주문이 완료되었습니다.");
     }
 }

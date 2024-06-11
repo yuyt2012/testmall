@@ -40,6 +40,8 @@ public class QOrder extends EntityPathBase<Order> {
 
     public final StringPath shippingMethod = createString("shippingMethod");
 
+    public final NumberPath<Integer> totalPrice = createNumber("totalPrice", Integer.class);
+
     public final DateTimePath<java.util.Date> updateDate = createDateTime("updateDate", java.util.Date.class);
 
     public QOrder(String variable) {

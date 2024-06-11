@@ -12,7 +12,7 @@ import static io.ecp.testmall.delivery.entity.DeliveryStatus.*;
 
 @Data
 public class OrderDTO {
-    private Long memberId;
+    private String email;
     private String paymentMethod;
     private String shippingMethod;
     private List<OrderProductDTO> orderProducts;

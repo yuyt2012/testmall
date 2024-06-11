@@ -17,7 +17,6 @@ public class OrderProductDTO {
         return OrderProduct.builder()
                 .price(this.price)
                 .quantity(this.quantity)
-                .product(new Product(this.productId))
-
+                .build();
     }
 }

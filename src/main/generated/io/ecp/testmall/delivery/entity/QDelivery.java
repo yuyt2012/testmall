@@ -28,15 +28,9 @@ public class QDelivery extends EntityPathBase<Delivery> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final StringPath receiverCity = createString("receiverCity");
-
     public final StringPath receiverName = createString("receiverName");
 
     public final StringPath receiverPhone = createString("receiverPhone");
-
-    public final StringPath receiverStreet = createString("receiverStreet");
-
-    public final StringPath receiverZipcode = createString("receiverZipcode");
 
     public QDelivery(String variable) {
         this(Delivery.class, forVariable(variable), INITS);
