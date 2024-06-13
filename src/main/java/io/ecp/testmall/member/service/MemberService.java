@@ -17,11 +17,13 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class MemberService {
 
-    @Autowired
-    private MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder) {
+        this.memberRepository = memberRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     public Optional<Member> findByEmail(String email) {
         return memberRepository.findByEmail(email);

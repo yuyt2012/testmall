@@ -1,7 +1,9 @@
 package io.ecp.testmall.order.entity;
 
 import io.ecp.testmall.delivery.entity.Delivery;
+import io.ecp.testmall.delivery.entity.DeliveryStatus;
 import io.ecp.testmall.member.entity.Member;
+import io.ecp.testmall.product.entity.Product;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -37,13 +39,14 @@ public class Order {
     private Member member;
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<OrderProduct> orderProducts;
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Delivery delivery;
 
     @PrePersist
     protected void onRegDate() {
         regDate = new Date();
         updateDate = new Date();
+        orderDate = new Date();
     }
 
     @PreUpdate
@@ -51,13 +54,19 @@ public class Order {
         updateDate = new Date();
     }
 
-    public void addOrderProduct(OrderProduct orderProduct) {
-        this.orderProducts.add(orderProduct);
-        orderProduct.setOrder(this);
-    }
+    public void cancelOrder() {
+        if (orderStatus != OrderStatus.ORDER) {
+            throw new IllegalStateException("주문이 이미 취소되었거나, 배송이 완료되었습니다.");
+        }
 
-    public void removeOrderProduct(OrderProduct orderProduct) {
-        this.orderProducts.remove(orderProduct);
-        orderProduct.setOrder(null);
+        this.orderStatus = OrderStatus.CANCEL;
+        delivery.setDeliveryStatus(DeliveryStatus.CANCEL);
+
+
+        for (OrderProduct orderProduct : orderProducts) {
+            Product product = orderProduct.getProduct();
+            int quantity = orderProduct.getQuantity();
+            product.addStockQuantity(quantity);
+        }
     }
 }

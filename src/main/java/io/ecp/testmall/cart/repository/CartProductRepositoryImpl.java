@@ -32,7 +32,7 @@ public class CartProductRepositoryImpl implements CartProductRepositoryCustom {
                 .limit(pageable.getPageSize())
                 .fetch()
                 .stream()
-                .map(CartProductListDTO::new)
+                .map(CartProductListDTO::new) // Use the new constructor
                 .toList();
 
         JPAQuery<Long> count = query.select(cartProduct.count())

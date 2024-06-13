@@ -1,6 +1,5 @@
 package io.ecp.testmall.delivery.entity;
 
-import io.ecp.testmall.member.entity.Address;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,7 +18,7 @@ public class Delivery {
     private String receiverName;
     private String receiverPhone;
     @Embedded
-    private Address address;
+    private DeliveryAddress deliveryAddress;
     @Enumerated(EnumType.STRING)
     private DeliveryStatus deliveryStatus;
 }

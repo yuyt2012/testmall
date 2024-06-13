@@ -1,5 +1,8 @@
 package io.ecp.testmall.member.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.ecp.testmall.board.entity.Comment;
+import io.ecp.testmall.board.entity.Post;
 import io.ecp.testmall.order.entity.Order;
 import jakarta.persistence.*;
 import lombok.*;
@@ -29,15 +32,11 @@ public class Member {
     private Address address;
     private String socialLogin;
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<Order> orders = new ArrayList<>();
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Post> posts = new ArrayList<>();
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Comment> comments = new ArrayList<>();
 
-    public void addOrder(Order order) {
-        this.orders.add(order);
-        order.setMember(this);
-    }
-
-    public void removeOrder(Order order) {
-        this.orders.remove(order);
-        order.setMember(null);
-    }
 }

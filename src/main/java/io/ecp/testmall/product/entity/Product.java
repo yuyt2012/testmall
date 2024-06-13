@@ -64,6 +64,20 @@ public class Product {
                 .collect(Collectors.toList());
     }
 
+    public void subtractStockQuantity(int quantity) {
+        this.stockQuantity -= quantity;
+        if (this.stockQuantity <= 0) {
+            this.isSoldOut = true;
+        }
+    }
+
+    public void addStockQuantity(int quantity) {
+        this.stockQuantity += quantity;
+        if (this.stockQuantity > 0) {
+            this.isSoldOut = false;
+        }
+    }
+
     @PrePersist
     protected void onRegDate() {
         regDate = new Date();

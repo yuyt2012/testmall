@@ -17,14 +17,14 @@ public class DeliveryDTO {
     private String deliveryStatus;
 
     public Delivery toDelivery() {
-        Address address = new Address(this.getReceiverCity()
+        DeliveryAddress deliveryAddress = new DeliveryAddress(this.getReceiverCity()
                 , this.getReceiverStreet()
                 , this.getReceiverZipcode());
 
         Delivery delivery = new Delivery();
         delivery.setReceiverName(this.getReceiverName());
         delivery.setReceiverPhone(this.getReceiverPhone());
-        delivery.setAddress(address);
+        delivery.setDeliveryAddress(deliveryAddress);
         delivery.setDeliveryStatus(DeliveryStatus.valueOf(this.getDeliveryStatus()));
         return delivery;
     }

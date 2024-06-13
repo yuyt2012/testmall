@@ -30,7 +30,7 @@ public class ProductListDTO {
         this.name = product.getName();
         this.price = product.getPrice();
         this.stockQuantity = product.getStockQuantity();
-        this.isSoldOut = product.isSoldOut();
+        this.isSoldOut = product.getStockQuantity() == 0;
         this.parentCategoryName = product.getParentCategoryName();
         this.subCategoryNames = product.getSubCategoryNames();
         this.imageUrl = product.getImageUrl();

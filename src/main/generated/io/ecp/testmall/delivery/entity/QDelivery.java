@@ -22,7 +22,7 @@ public class QDelivery extends EntityPathBase<Delivery> {
 
     public static final QDelivery delivery = new QDelivery("delivery");
 
-    public final io.ecp.testmall.member.entity.QAddress address;
+    public final QDeliveryAddress deliveryAddress;
 
     public final EnumPath<DeliveryStatus> deliveryStatus = createEnum("deliveryStatus", DeliveryStatus.class);
 
@@ -50,7 +50,7 @@ public class QDelivery extends EntityPathBase<Delivery> {
 
     public QDelivery(Class<? extends Delivery> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.address = inits.isInitialized("address") ? new io.ecp.testmall.member.entity.QAddress(forProperty("address")) : null;
+        this.deliveryAddress = inits.isInitialized("deliveryAddress") ? new QDeliveryAddress(forProperty("deliveryAddress")) : null;
     }
 
 }

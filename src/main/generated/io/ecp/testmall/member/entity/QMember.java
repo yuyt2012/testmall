@@ -24,6 +24,8 @@ public class QMember extends EntityPathBase<Member> {
 
     public final QAddress address;
 
+    public final ListPath<io.ecp.testmall.board.entity.Comment, io.ecp.testmall.board.entity.QComment> comments = this.<io.ecp.testmall.board.entity.Comment, io.ecp.testmall.board.entity.QComment>createList("comments", io.ecp.testmall.board.entity.Comment.class, io.ecp.testmall.board.entity.QComment.class, PathInits.DIRECT2);
+
     public final StringPath email = createString("email");
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
@@ -35,6 +37,8 @@ public class QMember extends EntityPathBase<Member> {
     public final StringPath password = createString("password");
 
     public final StringPath phone = createString("phone");
+
+    public final ListPath<io.ecp.testmall.board.entity.Post, io.ecp.testmall.board.entity.QPost> posts = this.<io.ecp.testmall.board.entity.Post, io.ecp.testmall.board.entity.QPost>createList("posts", io.ecp.testmall.board.entity.Post.class, io.ecp.testmall.board.entity.QPost.class, PathInits.DIRECT2);
 
     public final EnumPath<Role> role = createEnum("role", Role.class);
 
