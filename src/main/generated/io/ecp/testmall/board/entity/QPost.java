@@ -30,11 +30,15 @@ public class QPost extends EntityPathBase<Post> {
 
     public final io.ecp.testmall.member.entity.QMember member;
 
+    public final StringPath password = createString("password");
+
     public final DateTimePath<java.util.Date> regDate = createDateTime("regDate", java.util.Date.class);
 
     public final StringPath title = createString("title");
 
     public final DateTimePath<java.util.Date> updateDate = createDateTime("updateDate", java.util.Date.class);
+
+    public final StringPath writer = createString("writer");
 
     public QPost(String variable) {
         this(Post.class, forVariable(variable), INITS);
