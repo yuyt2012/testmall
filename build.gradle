@@ -30,6 +30,9 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.10.1'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+    implementation 'org.springframework.boot:spring-boot-starter-batch'
+    implementation 'org.springframework.boot:spring-boot-starter-quartz'
+    testImplementation 'org.springframework.batch:spring-batch-test'
     annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
     implementation "com.querydsl:querydsl-core"
     implementation "com.querydsl:querydsl-collections"

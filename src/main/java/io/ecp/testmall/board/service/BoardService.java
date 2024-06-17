@@ -31,7 +31,7 @@ public class BoardService {
 
     @Transactional(readOnly = false)
     public void registerPost(PostDTO postDTO) {
-        // register post
+        
         Member member = memberRepository.findByEmail(postDTO.getEmail())
                 .orElseThrow(() -> new RuntimeException("해당 회원이 존재하지 않습니다."));
         Post post = new Post();
@@ -70,7 +70,7 @@ public class BoardService {
 
     @Transactional(readOnly = false)
     public void registerComment(CommentDTO commentDTO) {
-        // register comment
+
         Member member = memberRepository.findByEmail(commentDTO.getEmail())
                 .orElseThrow(() -> new RuntimeException("해당 회원이 존재하지 않습니다."));
         Post post = postRepository.findById(commentDTO.getPostId())

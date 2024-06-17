@@ -1,5 +1,6 @@
 package io.ecp.testmall.board.controller;
 
+import io.ecp.testmall.board.entity.CommentDTO;
 import io.ecp.testmall.board.entity.PostDTO;
 import io.ecp.testmall.board.entity.UpdatePostDTO;
 import io.ecp.testmall.board.service.BoardService;
@@ -7,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +21,9 @@ public class BoardController {
 
     @Autowired
     private BoardService boardService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @PostMapping("/registerpost")
     public ResponseEntity<?> registerPost(@RequestBody PostDTO postDTO,
@@ -46,10 +50,15 @@ public class BoardController {
 
     @DeleteMapping("/deletepost/{postId}")
     public ResponseEntity<?> deletePost(@PathVariable Long postId,
+                                        @RequestBody String password,
                                         @RequestHeader("Authorization") String token) {
         if (tokenValid(token)) return ResponseEntity.badRequest().build();
-        boardService.deletePost(postId);
-        return ResponseEntity.ok("success");
+        if (passwordEncoder.matches(password, boardService.getPost(postId).getPassword())) {
+            boardService.deletePost(postId);
+            return ResponseEntity.ok("success");
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @PutMapping("/updatepost/{postId}")
@@ -58,6 +67,14 @@ public class BoardController {
                                         @RequestHeader("Authorization") String token) {
         if (tokenValid(token)) return ResponseEntity.badRequest().build();
         boardService.updatePost(updatePostDTO, postId);
+        return ResponseEntity.ok("success");
+    }
+
+    @PostMapping("/registercomment")
+    public ResponseEntity<?> registerComment(@RequestBody CommentDTO commentDTO,
+                                             @RequestHeader("Authorization") String token) {
+        if (tokenValid(token)) return ResponseEntity.badRequest().build();
+        boardService.registerComment(commentDTO);
         return ResponseEntity.ok("success");
     }
 }
