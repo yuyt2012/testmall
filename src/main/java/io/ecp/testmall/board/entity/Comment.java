@@ -35,6 +35,8 @@ public class Comment {
     private Comment parent;
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Comment> child = new ArrayList<>();
+    private int depth;
+    private boolean isDeleted;
     @Temporal(TemporalType.TIMESTAMP)
     private Date regDate;
     @Temporal(TemporalType.TIMESTAMP)

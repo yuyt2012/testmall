@@ -26,7 +26,11 @@ public class QComment extends EntityPathBase<Comment> {
 
     public final StringPath content = createString("content");
 
+    public final NumberPath<Integer> depth = createNumber("depth", Integer.class);
+
     public final NumberPath<Long> id = createNumber("id", Long.class);
+
+    public final BooleanPath isDeleted = createBoolean("isDeleted");
 
     public final io.ecp.testmall.member.entity.QMember member;
 
