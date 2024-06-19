@@ -2,6 +2,7 @@ package io.ecp.testmall.order.repository;
 
 import io.ecp.testmall.order.entity.OrderDetailDTO;
 import io.ecp.testmall.order.entity.OrderListDTO;
+import io.ecp.testmall.order.entity.OrdersDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -12,4 +13,6 @@ public interface OrderRepositoryCustom {
     Page<OrderListDTO> searchOrderList(Pageable pageable, String email);
 
     List<OrderDetailDTO> searchOrderDetail(Long orderId);
+
+    Page<OrdersDTO> searchAllOrders(Pageable pageable);
 }

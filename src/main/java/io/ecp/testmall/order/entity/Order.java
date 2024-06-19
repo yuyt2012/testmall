@@ -1,5 +1,6 @@
 package io.ecp.testmall.order.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.ecp.testmall.delivery.entity.Delivery;
 import io.ecp.testmall.delivery.entity.DeliveryStatus;
 import io.ecp.testmall.member.entity.Member;
@@ -68,5 +69,9 @@ public class Order {
             int quantity = orderProduct.getQuantity();
             product.addStockQuantity(quantity);
         }
+    }
+
+    public void updateOrderStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
     }
 }

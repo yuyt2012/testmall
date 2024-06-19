@@ -22,19 +22,11 @@ public class QComment extends EntityPathBase<Comment> {
 
     public static final QComment comment = new QComment("comment");
 
-    public final ListPath<Comment, QComment> child = this.<Comment, QComment>createList("child", Comment.class, QComment.class, PathInits.DIRECT2);
-
     public final StringPath content = createString("content");
-
-    public final NumberPath<Integer> depth = createNumber("depth", Integer.class);
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final BooleanPath isDeleted = createBoolean("isDeleted");
-
     public final io.ecp.testmall.member.entity.QMember member;
-
-    public final QComment parent;
 
     public final QPost post;
 
@@ -61,7 +53,6 @@ public class QComment extends EntityPathBase<Comment> {
     public QComment(Class<? extends Comment> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.member = inits.isInitialized("member") ? new io.ecp.testmall.member.entity.QMember(forProperty("member"), inits.get("member")) : null;
-        this.parent = inits.isInitialized("parent") ? new QComment(forProperty("parent"), inits.get("parent")) : null;
         this.post = inits.isInitialized("post") ? new QPost(forProperty("post"), inits.get("post")) : null;
     }
 

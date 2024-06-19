@@ -77,4 +77,14 @@ public class OrderService {
     public List<OrderDetailDTO> getOrderDetail(Long orderId) {
         return orderRepository.searchOrderDetail(orderId);
     }
+
+    public Page<OrdersDTO> getOrders(Pageable pageable) {
+        return orderRepository.searchAllOrders(pageable);
+    }
+
+    public void updateOrderStatus(Long orderId, OrderStatus orderStatus) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 주문이 존재하지 않습니다."));
+        order.updateOrderStatus(orderStatus);
+    }
 }

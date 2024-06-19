@@ -48,4 +48,10 @@ public class OrderController {
         return ResponseEntity.ok(orderService.getOrderDetail(orderId));
     }
 
+    @GetMapping("/getorders")
+    public ResponseEntity<?> getOrders(@PageableDefault(size = 10) Pageable pageable,
+                                       @RequestHeader("Authorization") String token) {
+        if (tokenValid(token)) return ResponseEntity.badRequest().build();
+        return ResponseEntity.ok(orderService.getOrders(pageable));
+    }
 }

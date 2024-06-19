@@ -1,13 +1,12 @@
 package io.ecp.testmall.order.repository;
 
+import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import io.ecp.testmall.delivery.entity.QDelivery;
-import io.ecp.testmall.order.entity.OrderDetailDTO;
-import io.ecp.testmall.order.entity.OrderListDTO;
-import io.ecp.testmall.order.entity.QOrder;
-import io.ecp.testmall.order.entity.QOrderProduct;
+import io.ecp.testmall.order.entity.*;
 import io.ecp.testmall.product.entity.QProduct;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -81,5 +80,31 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
                 .where(order.id.eq(orderId))
                 .fetchResults()
                 .getResults();
+    }
+
+    @Override
+    public Page<OrdersDTO> searchAllOrders(Pageable pageable) {
+        JPAQueryFactory query = new JPAQueryFactory(em);
+
+        List<OrdersDTO> results = query
+                .select(constructor(OrdersDTO.class,
+                        order.id,
+                        order.member.email,
+                        order.orderStatus.stringValue(),
+                        delivery.deliveryStatus.stringValue(),
+                        order.totalPrice,
+                        order.orderDate))
+                .from(order)
+                .join(order.orderProducts, orderProduct)
+                .join(orderProduct.product, product)
+                .join(order.delivery, delivery)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        JPAQuery<Long> count = query.select(order.count())
+                .from(order);
+
+        return PageableExecutionUtils.getPage(results, pageable, count::fetchOne);
     }
 }

@@ -81,4 +81,8 @@ public class BoardService {
         comment.setContent(commentDTO.getContent());
         commentRepository.save(comment);
     }
+
+    public Page<CommentListDTO> getCommentList(Long postId, Pageable pageable) {
+        return commentRepository.commentList(postId, pageable);
+    }
 }

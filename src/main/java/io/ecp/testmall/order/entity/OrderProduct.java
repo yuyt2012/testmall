@@ -1,5 +1,6 @@
 package io.ecp.testmall.order.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.ecp.testmall.product.entity.Product;
 import jakarta.persistence.*;
 import lombok.*;

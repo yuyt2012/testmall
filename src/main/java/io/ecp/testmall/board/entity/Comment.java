@@ -1,5 +1,6 @@
 package io.ecp.testmall.board.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.ecp.testmall.member.entity.Member;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
@@ -30,13 +31,6 @@ public class Comment {
     private Post post;
     @NotEmpty
     private String content;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_id")
-    private Comment parent;
-    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<Comment> child = new ArrayList<>();
-    private int depth;
-    private boolean isDeleted;
     @Temporal(TemporalType.TIMESTAMP)
     private Date regDate;
     @Temporal(TemporalType.TIMESTAMP)

@@ -34,6 +34,7 @@ public class Post {
     @JsonIgnore
     private Member member;
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<Comment> comments = new ArrayList<>();
     @Temporal(TemporalType.TIMESTAMP)
     private Date regDate;

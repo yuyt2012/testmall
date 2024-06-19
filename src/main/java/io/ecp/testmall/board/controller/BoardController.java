@@ -4,6 +4,7 @@ import io.ecp.testmall.board.entity.CommentDTO;
 import io.ecp.testmall.board.entity.PostDTO;
 import io.ecp.testmall.board.entity.UpdatePostDTO;
 import io.ecp.testmall.board.service.BoardService;
+import org.aspectj.lang.annotation.control.CodeGenerationHint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -66,8 +67,11 @@ public class BoardController {
                                         @PathVariable Long postId,
                                         @RequestHeader("Authorization") String token) {
         if (tokenValid(token)) return ResponseEntity.badRequest().build();
-        boardService.updatePost(updatePostDTO, postId);
-        return ResponseEntity.ok("success");
+        if (passwordEncoder.matches(updatePostDTO.getPassword(), boardService.getPost(postId).getPassword())) {
+            boardService.updatePost(updatePostDTO, postId);
+            return ResponseEntity.ok("success");
+        }
+        return ResponseEntity.badRequest().build();
     }
 
     @PostMapping("/registercomment")
@@ -76,5 +80,14 @@ public class BoardController {
         if (tokenValid(token)) return ResponseEntity.badRequest().build();
         boardService.registerComment(commentDTO);
         return ResponseEntity.ok("success");
+    }
+
+    @GetMapping("/commentlist/{postId}")
+    public ResponseEntity<?> getCommentList(@PathVariable Long postId,
+                                            Pageable pageable,
+                                            @RequestHeader("Authorization") String token) {
+        if (tokenValid(token)) return ResponseEntity.badRequest().build();
+        Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "regDate"));
+        return ResponseEntity.ok(boardService.getCommentList(postId, sortedPageable));
     }
 }

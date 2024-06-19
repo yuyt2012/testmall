@@ -1,9 +1,14 @@
 package io.ecp.testmall.board.repository;
 
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import io.ecp.testmall.board.entity.Comment;
+import io.ecp.testmall.board.entity.CommentListDTO;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.support.PageableExecutionUtils;
 
 import java.util.List;
 
@@ -15,13 +20,23 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
     private EntityManager em;
 
     @Override
-    public List<Comment> findCommentByPostId(Long postId) {
+    public Page<CommentListDTO> commentList(Long postId, Pageable pageable) {
         JPAQueryFactory query = new JPAQueryFactory(em);
-        return query.selectFrom(comment)
-                .leftJoin(comment.parent)
-                .fetchJoin()
-                .where(comment.parent.id.eq(postId))
-                .orderBy(comment.parent.id.asc().nullsFirst())
-                .fetch();
+
+        List<CommentListDTO> commentListDTOS = query.select(comment)
+                .from(comment)
+                .where(comment.post.id.eq(postId))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch()
+                .stream()
+                .map(CommentListDTO::new)
+                .toList();
+
+        JPAQuery<Long> count = query.select(comment.count())
+                .from(comment)
+                .where(comment.post.id.eq(postId));
+
+        return PageableExecutionUtils.getPage(commentListDTOS, pageable, count::fetchOne);
     }
 }

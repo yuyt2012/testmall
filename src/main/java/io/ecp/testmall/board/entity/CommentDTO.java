@@ -20,7 +20,4 @@ public class CommentDTO {
     private String writer;
     @NotEmpty
     private String content;
-    private Long parentId;
-    private int depth;
-    private boolean isDeleted;
 }
