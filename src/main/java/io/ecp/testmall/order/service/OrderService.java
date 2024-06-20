@@ -1,6 +1,7 @@
 package io.ecp.testmall.order.service;
 
 import io.ecp.testmall.delivery.entity.Delivery;
+import io.ecp.testmall.delivery.entity.DeliveryStatus;
 import io.ecp.testmall.member.entity.Member;
 import io.ecp.testmall.member.repository.MemberRepository;
 import io.ecp.testmall.order.entity.*;
@@ -82,9 +83,10 @@ public class OrderService {
         return orderRepository.searchAllOrders(pageable);
     }
 
-    public void updateOrderStatus(Long orderId, OrderStatus orderStatus) {
+    @Transactional(readOnly = false)
+    public void updateDeliveryStatus(Long orderId, DeliveryStatus deliveryStatus) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 주문이 존재하지 않습니다."));
-        order.updateOrderStatus(orderStatus);
+        order.updateDeliveryStatus(deliveryStatus);
     }
 }

@@ -1,6 +1,8 @@
 package io.ecp.testmall.order.controller;
 
+import io.ecp.testmall.delivery.entity.DeliveryStatus;
 import io.ecp.testmall.order.entity.OrderDTO;
+import io.ecp.testmall.order.entity.UpdateDeliveryStatusDTO;
 import io.ecp.testmall.order.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -53,5 +55,13 @@ public class OrderController {
                                        @RequestHeader("Authorization") String token) {
         if (tokenValid(token)) return ResponseEntity.badRequest().build();
         return ResponseEntity.ok(orderService.getOrders(pageable));
+    }
+
+    @PutMapping("/order/delivery")
+    public ResponseEntity<?> updateDeliveryStatus(@RequestBody UpdateDeliveryStatusDTO UpdateDeliveryStatusDTO,
+                                                  @RequestHeader("Authorization") String token) {
+        if (tokenValid(token)) return ResponseEntity.badRequest().build();
+        orderService.updateDeliveryStatus(UpdateDeliveryStatusDTO.getOrderId(), DeliveryStatus.valueOf(UpdateDeliveryStatusDTO.getDeliveryStatus()));
+        return ResponseEntity.ok("success");
     }
 }

@@ -71,7 +71,7 @@ public class Order {
         }
     }
 
-    public void updateOrderStatus(OrderStatus orderStatus) {
-        this.orderStatus = orderStatus;
+    public void updateDeliveryStatus(DeliveryStatus deliveryStatus) {
+        delivery.setDeliveryStatus(deliveryStatus);
     }
 }
