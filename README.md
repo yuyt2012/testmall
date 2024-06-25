@@ -89,6 +89,24 @@ erDiagram
         Long cart_id FK
         Long product_id FK
     }
+    POST {
+        Long id PK "board_id"
+        String writer
+        String title
+        String password
+        String content
+        Long member_id FK
+        Date regDate
+        Date updateDate
+    }
+    COMMENT {
+        Long id PK "comment_id"
+        String content
+        Date regDate
+        Date updateDate
+        Long member_id FK
+        Long post_id FK
+    }
     MEMBER ||--o{ ORDER : "places"
     ORDER ||--o{ ORDERPRODUCT : "contains"
     ORDERPRODUCT ||--|| PRODUCT : "represents"
@@ -100,6 +118,9 @@ erDiagram
     CART ||--|| MEMBER : "belongs_to"
     CARTPRODUCT ||--|| CART : "belongs_to"
     CARTPRODUCT ||--|| PRODUCT : "contains"
+    MEMBER ||--o{ POST : "writes"
+    POST ||--o{ COMMENT : "has"
+    MEMBER ||--o{ COMMENT : "writes"
 ```
 ---
 ## 3. API 명세서

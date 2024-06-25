@@ -21,7 +21,7 @@ public class ImageController {
     public ResponseEntity<Resource> serveFile(@PathVariable String filename) {
         try {
             String decodedFilename = URLDecoder.decode(filename, StandardCharsets.UTF_8);
-            Path file = Paths.get("C:/Users/Public/Documents/study/testmall/src/uploaded-images", decodedFilename);
+            Path file = Paths.get("/Users/yooyoungtae/Desktop/testMall/src/uploaded-images", decodedFilename);
             Resource resource = new UrlResource(file.toUri());
             return ResponseEntity.ok().body(resource);
         } catch (Exception e) {
