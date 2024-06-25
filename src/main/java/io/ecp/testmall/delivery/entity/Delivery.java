@@ -3,6 +3,8 @@ package io.ecp.testmall.delivery.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Date;
+
 @Entity
 @Getter
 @Setter
@@ -21,4 +23,19 @@ public class Delivery {
     private DeliveryAddress deliveryAddress;
     @Enumerated(EnumType.STRING)
     private DeliveryStatus deliveryStatus;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date regDate;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date updateDate;
+
+    @PrePersist
+    protected void onRegDate() {
+        regDate = new Date();
+        updateDate = new Date();
+    }
+
+    @PreUpdate
+    protected void onUpdateDate() {
+        updateDate = new Date();
+    }
 }

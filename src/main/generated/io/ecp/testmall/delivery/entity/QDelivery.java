@@ -32,6 +32,10 @@ public class QDelivery extends EntityPathBase<Delivery> {
 
     public final StringPath receiverPhone = createString("receiverPhone");
 
+    public final DateTimePath<java.util.Date> regDate = createDateTime("regDate", java.util.Date.class);
+
+    public final DateTimePath<java.util.Date> updateDate = createDateTime("updateDate", java.util.Date.class);
+
     public QDelivery(String variable) {
         this(Delivery.class, forVariable(variable), INITS);
     }
